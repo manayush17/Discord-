@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles1.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Welcome Back</h2>
+        <p>We are excited to see you again</p>
+        <form action="/login/" method="post">
+            {% csrf_token %}
+            <div class="form-content">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <br>
+                <a class="redir" href="{% url 'signup' %}">I already have an account</a>
+            </div>
+        </form>
+        {% if error_message %}
+            <div class="error-messages">
+                <p>{{ error_message }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

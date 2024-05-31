@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Clone Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles2.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Discord Clone</h1>
+        <nav>
+            <a class="redir" href="{% url 'logout' %}">Logout</a>
+            <a class="redir" href="{% url 'create_server' %}">Create Server</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Channels</h2>
+            <ul>
+                <li> general</li>
+                <li> random</li>
+                <li> help</li>
+            </ul>
+        </aside>
+        <main class="chat">
+            <h2>Chat Area</h2>
+            <div class="messages">
+            </div>
+            <form class="message-form" method="post" action="">
+                {% csrf_token %}
+                <input type="text" name="message" placeholder="Type a message..." required>
+                <button type="submit">Send</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

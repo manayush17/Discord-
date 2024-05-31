@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Server</title>
+    <link rel="stylesheet" href="{% static 'server_styles.css' %}">
+</head>
+<body>
+    <div class="server_container">
+        <h2>Create Server</h2>
+        <form action="{% url 'create_server' %}" method="post">
+            {% csrf_token %}
+            <div class="form">
+                {{ form.as_p }}
+            </div>
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+</html>

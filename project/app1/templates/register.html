@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <div class="registration-container">
+        <h2>Signup</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-content">
+                {{ form.username.label_tag }} {{ form.username }}
+            </div>
+            <div class="form-content">
+                {{ form.email.label_tag }} {{ form.email }}
+            </div>
+            <div class="form-content">
+                {{ form.password.label_tag }} {{ form.password }}
+            </div>
+            <div class="form-content">
+                {{ form.confirm_password.label_tag }} {{ form.confirm_password }}
+            </div>
+            <button type="submit">Signup</button>
+        </form>
+        {% if form.errors %}
+            <div class="error-messages">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <a class="redir" href="{% url 'login' %}">I already have an account</a>
+    </div>
+</body>
+</html>
