@@ -5,6 +5,7 @@ from .forms import RegistrationForm
 from django.http import HttpResponseRedirect 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from .models import Server, Membership
 from .forms import ServerForm
 
@@ -12,6 +13,7 @@ from .forms import ServerForm
 
 def Homepage(request):
     return render(request, 'home.html')
+
 
 def SignupPage(request):
     if request.method == 'POST':
@@ -29,6 +31,7 @@ def SignupPage(request):
     
     return render(request, 'register.html', {'form': form})
 
+@never_cache
 def LoginPage(request):
    
     if request.method == 'POST':
