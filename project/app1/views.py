@@ -1,16 +1,13 @@
 from django.shortcuts import render, redirect 
-from django.contrib.auth import authenticate, login 
+from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.models import User
-from .forms import RegistrationForm
+from .forms import RegistrationForm, ServerForm
 from django.http import HttpResponseRedirect 
 from django.urls import reverse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from django.contrib.auth import logout
 from .models import Server, Membership
-from .forms import ServerForm
-
 
 @login_required
 def Homepage(request):
@@ -29,7 +26,11 @@ def SignupPage(request):
             my_user = User.objects.create_user(username=username, email=email, password=password)
             my_user.save()
 
-            return redirect(reverse('home'))
+            # Authenticate and login the user
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect(reverse('home'))
     else:
         form = RegistrationForm()
     
@@ -37,7 +38,6 @@ def SignupPage(request):
 
 @never_cache
 def LoginPage(request):
-
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('home'))
     if request.method == 'POST':
@@ -47,7 +47,6 @@ def LoginPage(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-            
         else:
             error_message = "Username or password is incorrect. Please try again."
             return render(request, 'login.html', {'error_message': error_message})
@@ -56,9 +55,7 @@ def LoginPage(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('loginn')
-    
-    
+    return redirect('login')
 
 @login_required
 def create_server(request):

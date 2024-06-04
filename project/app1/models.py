@@ -1,17 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    email = models.EmailField(unique=True)
-    username = models.CharField
-    password = models.CharField
-
-    def __str__(self):
-        return self.username
 
 class Server(models.Model):
+    owner = models.ForeignKey(User, related_name='owned_servers', on_delete=models.CASCADE)
     name = models.CharField()
     description = models.TextField(blank=True)
-    owner = models.ForeignKey(User, related_name='owned_servers', on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
 
     def __str__(self):
