@@ -55,7 +55,7 @@ def LoginPage(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('loginn')
 
 
 
@@ -67,7 +67,7 @@ def create_server(request):
             server = form.save(commit=False)
             server.owner = request.user  # Set the owner to the current user
             server.save()
-            return redirect('server_created_successfully')  # Redirect to a success page
+            return redirect('home')  # Redirect to a success page
     else:
         form = ServerForm()
     return render(request, 'create_server.html', {'form': form})

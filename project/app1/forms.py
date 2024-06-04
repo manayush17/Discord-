@@ -44,4 +44,4 @@ class RegistrationForm(forms.ModelForm):
 class ServerForm(forms.ModelForm):
     class Meta:
         model = Server
-        fields = ['name', 'description']
+        fields = ['name', 'description','public']
