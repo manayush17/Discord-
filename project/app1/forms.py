@@ -2,10 +2,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 import re
+from django import forms
 from .models import Server
 
-    
-    
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Set Password'}))
 
@@ -45,4 +44,4 @@ class RegistrationForm(forms.ModelForm):
 class ServerForm(forms.ModelForm):
     class Meta:
         model = Server
-        fields = ['name', 'description', 'public']
+        fields = ['name', 'description']

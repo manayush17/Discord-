@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from .forms import RegistrationForm, ServerForm
 from django.http import HttpResponseRedirect 
 from django.urls import reverse
-from django.shortcuts import get_object_or_404
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import Server, Membership
+from .models import Server
 
 @login_required
 def Homepage(request):
@@ -57,31 +57,17 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+
 @login_required
 def create_server(request):
     if request.method == 'POST':
         form = ServerForm(request.POST)
         if form.is_valid():
             server = form.save(commit=False)
-            server.owner = request.user
+            server.owner = request.user  # Set the owner to the current user
             server.save()
-            Membership.objects.create(user=request.user, server=server)
-            return redirect('server_detail', pk=server.pk)
+            return redirect('server_created_successfully')  # Redirect to a success page
     else:
         form = ServerForm()
     return render(request, 'create_server.html', {'form': form})
-
-@login_required
-def join_server(request, server_id):
-    server = get_object_or_404(Server, id=server_id)
-    Membership.objects.get_or_create(user=request.user, server=server)
-    return redirect('server_detail', pk=server.pk)
-
-def server_list(request):
-    servers = Server.objects.filter(public=True)
-    return render(request, 'server_list.html', {'servers': servers})
-
-def server_detail(request, pk):
-    server = get_object_or_404(Server, pk=pk)
-    members = server.membership_set.all()
-    return render(request, 'server_detail.html', {'server': server, 'members': members})
