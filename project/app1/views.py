@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .forms import RegistrationForm, ServerForm
 from django.http import HttpResponseRedirect 
 from django.urls import reverse
-
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from .models import Server
@@ -67,7 +67,12 @@ def create_server(request):
             server = form.save(commit=False)
             server.owner = request.user  # Set the owner to the current user
             server.save()
-            return redirect('home')  # Redirect to a success page
+            return redirect('server_detail',server_id=server.id)  # Redirect to a success page
     else:
         form = ServerForm()
     return render(request, 'create_server.html', {'form': form})
+
+@login_required
+def server_detail(request, server_id):
+    server = get_object_or_404(Server, id=server_id)
+    return render(request, 'server_detail.html', {'server': server})

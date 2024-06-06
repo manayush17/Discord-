@@ -2,6 +2,7 @@
 from django.urls import path
 from app1 import views
 from .views import create_server
+from .views import create_server, server_detail
 
 urlpatterns = [
     path('',views.SignupPage,name='signup'),
@@ -9,4 +10,5 @@ urlpatterns = [
     path('home/', views.Homepage,name='home'),
     path('logout/',views.logout_view,name='logout'),
     path('create-server/', create_server, name='create_server'),
+     path('server/<int:server_id>/', server_detail, name='server_detail'),
 ]
