@@ -45,3 +45,9 @@ class ServerForm(forms.ModelForm):
     class Meta:
         model = Server
         fields = ['name', 'description','public']
+    
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Server.objects.filter(name=name).exists():
+            raise forms.ValidationError("A server with this name already exists.")
+        return name
