@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import Server
+from .models import Server ,Membership
 
 @login_required
 def Homepage(request):
@@ -65,12 +65,29 @@ def create_server(request):
         form = ServerForm(request.POST)
         if form.is_valid():
             server = form.save(commit=False)
-            server.owner = request.user  # Set the owner to the current user
+            server.owner = request.user  
             server.save()
-            return redirect('server_detail',server_id=server.id)  # Redirect to a success page
+            return redirect('server_detail',server_id=server.id)  
     else:
         form = ServerForm()
     return render(request, 'create_server.html', {'form': form})
+
+@login_required
+def server_detail(request, server_id):
+    server = get_object_or_404(Server, id=server_id)
+    return render(request, 'server_detail.html', {'server': server})
+
+@login_required
+def list_servers(request):
+    servers = Server.objects.filter(public=True)
+    return render(request, 'list_servers.html', {'server': servers})
+
+@login_required
+def join_server(request, server_id):
+    server = get_object_or_404(Server, id=server_id)
+    if not Membership.objects.filter(user=request.user, server=server).exists():
+        Membership.objects.create(user=request.user, server=server)
+    return redirect('server_detail', server_id=server.id)
 
 @login_required
 def server_detail(request, server_id):
