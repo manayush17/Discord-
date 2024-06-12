@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 import re
 from django import forms
-from .models import Server
+from .models import Server ,Channel
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Set Password'}))
@@ -15,8 +15,6 @@ class RegistrationForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'placeholder': 'Enter your Email'}),
             'username': forms.TextInput(attrs={'placeholder': 'Set your Username'}),
         }
-
-
     def clean_email(self):
         email = self.cleaned_data.get('email')
         email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
@@ -25,7 +23,6 @@ class RegistrationForm(forms.ModelForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError('Email address already in use.')
         return email
-
     def clean_password(self):
         password = self.cleaned_data.get('password')
         if len(password) < 8:
@@ -37,7 +34,7 @@ class RegistrationForm(forms.ModelForm):
         if not re.search(r"[0-9]", password):
             raise ValidationError('Password must contain at least one digit.')
         if not re.search(r"[@$!%*?&]", password):
-            raise ValidationError('Password must contain at least one special character (@$!%*?&).')
+            raise ValidationError('Password must contain at least one special character.')
         return password
 
 
@@ -51,3 +48,8 @@ class ServerForm(forms.ModelForm):
         if Server.objects.filter(name=name).exists():
             raise forms.ValidationError("A server with this name already exists.")
         return name
+
+class ChannelForm(forms.ModelForm):
+    class Meta:
+        model = Channel
+        fields = ['name']

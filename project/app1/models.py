@@ -13,3 +13,10 @@ class Membership(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.server.name}"
+
+class Channel(models.Model):
+    name = models.CharField(max_length=100)
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='channels')
+
+    def __str__(self):
+        return self.name

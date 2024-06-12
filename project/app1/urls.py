@@ -1,17 +1,14 @@
-
 from django.urls import path
-from app1 import views
-from .views import create_server
-from .views import create_server, server_detail ,list_servers ,join_server
+from . import views
 
 urlpatterns = [
-    path('',views.SignupPage,name='signup'),
-    path('login/', views.LoginPage,name='loginn'),
-    path('home/', views.Homepage,name='home'),
-    path('logout/',views.logout_view,name='logout'),
-    path('create-server/', create_server, name='create_server'),
-    path('server/<int:server_id>/', server_detail, name='server_detail'),
-    path('server/', list_servers, name='list_servers'),
-    path('server/<int:server_id>/join/', join_server, name='join_server'),
-
+    path('', views.home, name='home'),
+    path('signup/', views.SignupPage, name='signup'),
+    path('login/', views.LoginPage, name='loginn'),
+    path('logout/', views.logout_view, name='logout'),
+    path('create_server/', views.create_server, name='create_server'),
+    path('servers/<int:server_id>/', views.server_detail, name='server_detail'),
+    path('list_servers/', views.list_servers, name='list_servers'),
+    path('join_server/<int:server_id>/', views.join_server, name='join_server'),
+     path('server/<int:server_id>/channel/<int:channel_id>/', views.channel_detail, name='channel_detail'),
 ]

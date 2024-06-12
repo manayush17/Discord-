@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ channel.name }} - Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 10px;
+            min-height: 70px;
+            border-bottom: #0779e4 3px solid;
+        }
+        header h1 {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+        .main {
+            padding: 20px;
+            background: #fff;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ channel.name }}</h1>
+        </div>
+    </header>
+    <div class="container">
+        <div class="main">
+            <h2>Channel Details</h2>
+            <p>Server: {{ server.name }}</p>
+            <p>Channel Name: {{ channel.name }}</p>
+        </div>
+    </div>
+</body>
+</html>

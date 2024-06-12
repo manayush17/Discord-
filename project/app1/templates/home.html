@@ -1,10 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Clone Home</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'styles2.css' %}">
 </head>
 <body>
@@ -19,12 +19,25 @@
     <div class="container">
         <aside class="sidebar">
             <h2>Welcome, {{ user.username }}</h2>
-            <br><br><br><br>   
             <h2>Channels</h2>
             <ul>
                 <li>general</li>
                 <li>random</li>
                 <li>help</li>
+            </ul>
+            <h2>Created Servers</h2>
+            <ul>
+                {% for server in created_servers %}
+                    <li>{{ server.name }}</li>
+                    <a href="{% url 'server_detail' server.id %}">Enter</a>
+                {% endfor %}
+            </ul>
+            <h2>Joined Servers</h2>
+            <ul>
+                {% for server in joined_servers %}
+                    <li>{{ server.name }}</li>
+                    <a href="{% url 'join_server' server.id %}" class="enter">Enter</a>
+                    {% endfor %}
             </ul>
         </aside>
         <main class="chat">

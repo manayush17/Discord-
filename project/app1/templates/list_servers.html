@@ -13,7 +13,7 @@
     </header>
     <div class="container">
         <div class="server-list">
-            {% for server in server %}
+            {% for server in servers %}
                 <div class="server-item">
                     <span>{{ server.name }}</span>
                     <a href="{% url 'join_server' server.id %}" class="join-button">Join</a>
