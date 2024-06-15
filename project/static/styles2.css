@@ -1,10 +1,8 @@
-/* Reset CSS */
 body, h1, h2, ul, li, p {
     margin: 0;
     padding: 0;
 }
 
-/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -12,6 +10,7 @@ body {
     min-height: 100vh;
     background-color: #33363a;
     color: white;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 header {
@@ -21,10 +20,18 @@ header {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    position: fixed; /* Fix the header at the top */
+    top: 0;
+    z-index: 1000;
 }
 
 header h1 {
     margin: 0;
+}
+
+header nav {
+    margin-right: 20px; /* Adjust spacing */
 }
 
 header nav a {
@@ -36,6 +43,7 @@ header nav a {
 .container {
     display: flex;
     flex: 1;
+    margin-top: 60px; /* Adjust for the fixed header height */
 }
 
 .sidebar {
@@ -43,6 +51,11 @@ header nav a {
     background-color: #25282b;
     padding: 20px;
     box-sizing: border-box;
+    height: 100vh; /* Full height */
+    position: fixed; /* Fix the sidebar */
+    top: 60px; /* Below the header */
+    bottom: 0;
+    overflow-y: auto; /* Allow vertical scrolling */
 }
 
 .sidebar h2 {
@@ -67,83 +80,92 @@ header nav a {
     background-color: #3f4248;
 }
 
-.chat {
+.main-content {
+    margin-left: 200px; /* Adjust for the fixed sidebar width */
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #36393f;
+    overflow-y: auto; /* Allow vertical scrolling */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.chat h2 {
-    margin: 0;
+.friends {
+    background-color: #667dd1;
     padding: 10px 20px;
-    background-color: #40444b;
-    border-bottom: 1px solid #23272a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: calc(100% - 200px); /* Adjust to match the main content width */
+    position: fixed; /* Fix the friends bar */
+    top: 60px; /* Below the header */
+    left: 200px; /* Align with the end of sidebar */
+    z-index: 999; /* Ensure it's above the main content */
 }
 
-.messages {
+.friends nav {
+    display: flex;
+}
+
+.friends nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.chat {
     flex: 1;
     padding: 20px;
-    overflow-y: auto;
-}
-
-.message {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #363a3f;
-    border-radius: 5px;
-}
-
-.message .user {
-    font-weight: bold;
-    color: #7289da;
-}
-
-.message-form {
+    background-color: #2f3136;
     display: flex;
-    padding: 10px;
-    background-color: #40444b;
-    border-top: 1px solid #23272a;
+    flex-direction: column;
+    box-sizing: border-box;
+    h2{padding: 15px;}
 }
 
-.message-form input {
-    flex: 1;
+.search-form {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+}
+
+.search-form form {
+    display: flex;
+    justify-content: flex-start; /* Align form to the left */
+    width: 100%; /* Ensure form takes full width of parent */
+}
+
+.search-form input[type="text"] {
+    flex: 1; /* Take up remaining space */
     padding: 10px;
+    margin-right: 10px;
     border: none;
-    border-radius: 5px;
-    background-color: #2c2f33;
-    color: white;
+    border-radius: 3px;
+    width: 100%; /* Take full width of parent */
+    max-width: 500px; /* Set maximum width to avoid stretching too much */
 }
 
-.message-form input::placeholder {
-    color: #999;
-}
-
-.message-form button {
+.search-form button {
     padding: 10px 20px;
-    background-color: #677dce;
     border: none;
-    border-radius: 5px;
+    border-radius: 3px;
+    background-color: #7289da;
     color: white;
-    margin-left: 10px;
     cursor: pointer;
 }
 
-.message-form button:hover {
-    background-color: #5b70b6;
-}
-
-
-.enter {
-    padding: 5px 10px;
-    background-color: #7289da;
-    color: white;
-    text-decoration: none;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-
-.enter:hover {
+.search-form button:hover {
     background-color: #5b6eae;
 }
 
+.sidebar ul li a,
+.main-content .sidebar ul li a {
+    text-decoration: none; /* Remove underline from hyperlinks */
+    color: white; /* Ensure text color is maintained */
+}
+
+.sidebar ul li a:hover,
+.main-content .sidebar ul li a:hover {
+    text-decoration: underline; /* Add underline on hover if needed */
+}

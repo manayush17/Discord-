@@ -28,28 +28,41 @@
             <h2>Created Servers</h2>
             <ul>
                 {% for server in created_servers %}
-                    <li>{{ server.name }}</li>
-                    <a href="{% url 'server_detail' server.id %}">Enter</a>
+                    <li><a href="{% url 'server_detail' server.id %}">{{ server.name }}</a></li>
                 {% endfor %}
             </ul>
             <h2>Joined Servers</h2>
             <ul>
                 {% for server in joined_servers %}
-                    <li>{{ server.name }}</li>
-                    <a href="{% url 'join_server' server.id %}" class="enter">Enter</a>
-                    {% endfor %}
+                    <li><a href="{% url 'join_server' server.id %}" class="enter">{{ server.name }}</a></li>
+                {% endfor %}
             </ul>
         </aside>
-        <main class="chat">
-            <h2>Chat Area</h2>
-            <div class="messages">
+        <div class="main-content">
+            <div class="friends">
+                <nav>
+                    <a href="#">Online</a>
+                    <a href="#">All</a>
+                    <a href="#">Pending</a>
+                    <a href="#">Blocked</a>
+                    <a href="#">Add Friends</a>
+                </nav>
             </div>
-            <form class="message-form" method="post" action="">
-                {% csrf_token %}
-                <input type="text" name="message" placeholder="Type a message..." required>
-                <button type="submit">Send</button>
-            </form>
-        </main>
+            <main class="chat">
+                <h2>Chat Area</h2>
+                <div class="search-form">
+                    <!-- Search form to add friend by username -->
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" name="username" placeholder="Add friend with Discord username" required>
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="messages">
+                    <!-- Messages will be displayed here -->
+                </div>
+            </main>
+        </div>
     </div>
 </body>
 </html>
