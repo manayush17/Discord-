@@ -1,12 +1,14 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, ServerForm ,ChannelForm
-from django.http import HttpResponseRedirect
+from .forms import RegistrationForm, ServerForm, ChannelForm, FriendRequestForm, SearchForm
+from django.http import HttpResponseRedirect ,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import Server, Membership ,Channel
+from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation
+import random,string
 
 @never_cache
 def SignupPage(request):
@@ -65,21 +67,6 @@ def create_server(request):
 
 
 @login_required
-def server_detail(request, server_id):
-    server = get_object_or_404(Server, id=server_id)
-    if request.method == 'POST':
-        form = ChannelForm(request.POST)
-        if form.is_valid():
-            channel = form.save(commit=False)
-            channel.server = server
-            channel.save()
-            return redirect('server_detail', server_id=server.id)
-    else:
-        form = ChannelForm()
-    channels = server.channels.all()  # Get all channels related to this server
-    return render(request, 'server_detail.html', {'server': server, 'channels': channels, 'form': form})
-
-@login_required
 def list_servers(request):
     servers = Server.objects.filter(public=True)
     return render(request, 'list_servers.html', {'servers': servers})
@@ -96,14 +83,100 @@ def home(request):
     user = request.user
     created_servers = Server.objects.filter(owner=user)
     joined_servers = Server.objects.filter(memberships__user=user).exclude(owner=user)
+    
+    # Handling friend request form submission
+    search_form = SearchForm()
+    search_results = []
+
+    if request.method == 'POST':
+        search_form = SearchForm(request.POST)
+        if search_form.is_valid():
+            username = search_form.cleaned_data['username']
+            search_results = User.objects.filter(username__icontains=username).exclude(username=user.username)
+    
     return render(request, 'home.html', {
         'created_servers': created_servers,
-        'joined_servers': joined_servers
+        'joined_servers': joined_servers,
+        'search_form': search_form,
+        'search_results': search_results,
     })
 
+@login_required
+def send_friend_request(request, receiver_id):
+    receiver = get_object_or_404(User, id=receiver_id)
+    if receiver != request.user and not FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists():
+        FriendRequest.objects.create(sender=request.user, receiver=receiver)
+    return redirect('home')
 
 @login_required
+def accept_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id)
+    if friend_request.receiver == request.user:
+        Friendship.objects.create(user1=friend_request.sender, user2=friend_request.receiver)
+        friend_request.status = 'accepted'
+        friend_request.save()
+    return redirect('pending_requests')
+
+@login_required
+def reject_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id)
+    if friend_request.receiver == request.user:
+        friend_request.status = 'rejected'
+        friend_request.save()
+    return redirect('pending_requests')
+
+@login_required
+def friends_list(request):
+    user = request.user
+    friendships = Friendship.objects.filter(user1=user) | Friendship.objects.filter(user2=user)
+    friends = [friendship.user1 if friendship.user2 == user else friendship.user2 for friendship in friendships]
+    return render(request, 'friends_list.html', {'friends': friends})
+
+@login_required
+def pending_requests(request):
+    user = request.user
+    pending_requests = FriendRequest.objects.filter(receiver=user, status='pending')
+    return render(request, 'pending_requests.html', {'pending_requests': pending_requests})
+
+
 def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
     channel = get_object_or_404(Channel, id=channel_id, server=server)
     return render(request, 'channel_detail.html', {'server': server, 'channel': channel})
+
+
+@login_required
+def create_invitation(request, server_id):
+    server = get_object_or_404(Server, id=server_id)
+    if request.user != server.owner:
+        return HttpResponse("You are not the owner of this server.", status=403)
+
+    invitation = Invitation.objects.create(server=server)
+    invite_link = request.build_absolute_uri(f"/invite/{invitation.code}/")
+
+    return render(request, 'server_detail.html', {
+        'server': server,
+        'channels': server.channels.all(),
+        'invite_link': invite_link
+    })
+
+
+@login_required
+def join_via_invitation(request, code):
+    invitation = get_object_or_404(Invitation, code=code)
+    server = invitation.server
+    if request.user.is_authenticated:
+        Membership.objects.get_or_create(user=request.user, server=server)
+        return redirect('server_detail', server_id=server.id)
+    else:
+        return redirect('loginn')
+
+@login_required
+def server_detail(request, server_id):
+    server = get_object_or_404(Server, id=server_id)
+    memberships = server.memberships.all()  
+    return render(request, 'server_detail.html', {
+        'server': server,
+        'channels': server.channels.all(),
+        'memberships': memberships,
+    })

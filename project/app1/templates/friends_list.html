@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Friends</title>
+    <link rel="stylesheet" href="{% static 'friend_list.css' %}">
+</head>
+<body>
+    <header>
+        <h1>All Friends</h1>
+        <nav>
+            <a class="redir" href="{% url 'home' %}">Home</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Friends List</h2>
+        <ul>
+            {% for friend in friends %}
+                <li>{{ friend.username }}</li>
+            {% endfor %}
+        </ul>
+        {% if not friends %}
+            <p>You have no friends added yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

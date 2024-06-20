@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Friend Requests</title>
+    <link rel="stylesheet" href="{% static 'pending_requests.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Pending Friend Requests</h1>
+        <nav>
+            <a class="redir" href="{% url 'home' %}">Home</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Pending Requests</h2>
+        <ul>
+            {% for request in pending_requests %}
+                <li>
+                    {{ request.sender.username }}
+                    <a href="{% url 'accept_friend_request' request.id %}">Accept</a>
+                    <a href="{% url 'reject_friend_request' request.id %}">Reject</a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% if not pending_requests %}
+            <p>You have no pending friend requests.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

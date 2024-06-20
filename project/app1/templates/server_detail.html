@@ -1,129 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ server.name }} - Details</title>
-    <style>
-        /* Reset CSS */
-        body, h1, h2, ul, li, p {
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Global Styles */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #33363a;
-            color: white;
-        }
-
-        header {
-            background-color: #667dd1;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        header h1 {
-            margin: 0;
-        }
-
-        header nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-        }
-
-        .sidebar {
-            width: 200px;
-            background-color: #25282b;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .sidebar h2 {
-            font-size: 18px;
-            margin: 0 0 10px 0;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #303236;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .sidebar ul li:hover {
-            background-color: #3f4248;
-        }
-
-        .main {
-            flex: 1;
-            padding: 20px;
-            background-color: #36393f;
-        }
-
-        .main h2 {
-            margin: 0;
-            padding: 10px 20px;
-            background-color: #40444b;
-            border-bottom: 1px solid #23272a;
-        }
-
-        .channels {
-            list-style: none;
-            padding: 0;
-        }
-
-        .channels li {
-            background-color: #7289da;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .channels li:hover {
-            background-color: #5b70b6;
-        }
-
-        .create-channel-form {
-            margin-top: 20px;
-        }
-
-        .create-channel-form input[type="text"],
-        .create-channel-form button {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #677dce;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .create-channel-form button:hover {
-            background-color: #5b6eae;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'server_styles.css' %}">
 </head>
 <body>
     <header>
@@ -133,8 +16,8 @@
         <div class="sidebar">
             <h2>Channels</h2>
             <ul class="channels">
-                {% for channel in channels %}
-                <li><a href="{% url 'channel_detail' server.id channel.id %}">{{ channel.name }}</a></li>
+                {% for channel in server.channels.all %}
+                <li><a href="{% url 'channel_detail' server_id=server.id channel_id=channel.id %}">{{ channel.name }}</a></li>
                 {% empty %}
                 <li>No channels available.</li>
                 {% endfor %}
@@ -150,6 +33,13 @@
         <div class="main">
             <h2>Server Description</h2>
             <p>{{ server.description }}</p>
+            <form class="invite-form" method="post" action="{% url 'create_invitation' server.id %}">
+                {% csrf_token %}
+                <button type="submit">Generate Invite Link</button>
+            </form>
+            {% if invite_link %}
+            <p>Invite Link: <a href="{{ invite_link }}">{{ invite_link }}</a></p>
+            {% endif %}
         </div>
     </div>
 </body>

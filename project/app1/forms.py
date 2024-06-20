@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import re
 from django import forms
 from .models import Server ,Channel
+from .models import FriendRequest
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Set Password'}))
@@ -53,3 +54,11 @@ class ChannelForm(forms.ModelForm):
     class Meta:
         model = Channel
         fields = ['name']
+
+class FriendRequestForm(forms.ModelForm):
+    class Meta:
+        model = FriendRequest
+        fields = []  # No fields here since sender and receiver will be set in views
+
+class SearchForm(forms.Form):
+    username = forms.CharField(max_length=100)

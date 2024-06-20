@@ -1,171 +1,176 @@
-body, h1, h2, ul, li, p {
+/* styles2.css */
+
+/* Reset CSS */
+body, h1, h2, ul, li, nav, header, div, a, form {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #33363a;
-    color: white;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    background-color: #2f3136;
+    color: #dcddde;
 }
 
 header {
-    background-color: #667dd1;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #7289da;
+    padding: 20px;
+    text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    position: fixed; /* Fix the header at the top */
-    top: 0;
-    z-index: 1000;
 }
 
 header h1 {
     margin: 0;
+    color: #fff;
 }
 
 header nav {
-    margin-right: 20px; /* Adjust spacing */
+    margin-top: 10px;
 }
 
-header nav a {
-    color: white;
+header nav .redir {
+    color: #fff;
     text-decoration: none;
-    margin-left: 20px;
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #3b3d41;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+header nav .redir:hover {
+    background-color: #5b6eae;
 }
 
 .container {
     display: flex;
     flex: 1;
-    margin-top: 60px; /* Adjust for the fixed header height */
 }
 
 .sidebar {
-    width: 200px;
-    background-color: #25282b;
+    width: 250px;
+    background-color: #2f3136;
     padding: 20px;
-    box-sizing: border-box;
-    height: 100vh; /* Full height */
-    position: fixed; /* Fix the sidebar */
-    top: 60px; /* Below the header */
-    bottom: 0;
-    overflow-y: auto; /* Allow vertical scrolling */
+    border-right: 1px solid #202225;
 }
 
 .sidebar h2 {
-    font-size: 18px;
-    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }
 
 .sidebar ul {
     list-style: none;
-    padding: 0;
+    padding-left: 0;
 }
 
 .sidebar ul li {
     margin-bottom: 10px;
-    padding: 10px;
-    background-color: #303236;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-.sidebar ul li:hover {
-    background-color: #3f4248;
+.sidebar ul li a {
+    color: #b9bbbe;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    background-color: #40444b;
 }
 
 .main-content {
-    margin-left: 200px; /* Adjust for the fixed sidebar width */
     flex: 1;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Allow vertical scrolling */
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.friends {
-    background-color: #667dd1;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: calc(100% - 200px); /* Adjust to match the main content width */
-    position: fixed; /* Fix the friends bar */
-    top: 60px; /* Below the header */
-    left: 200px; /* Align with the end of sidebar */
-    z-index: 999; /* Ensure it's above the main content */
-}
-
-.friends nav {
-    display: flex;
 }
 
 .friends nav a {
-    color: white;
+    color: #b9bbbe;
     text-decoration: none;
-    margin: 0 10px;
+    margin-right: 20px;
+    padding: 10px;
+    background-color: #3b3d41;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-.chat {
-    flex: 1;
-    padding: 20px;
-    background-color: #2f3136;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    h2{padding: 15px;}
+.friends nav a:hover {
+    background-color: #5b6eae;
 }
 
 .search-form {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: flex-start; /* Align items to the left */
+    margin: 20px 0;
 }
 
 .search-form form {
     display: flex;
-    justify-content: flex-start; /* Align form to the left */
-    width: 100%; /* Ensure form takes full width of parent */
+    gap: 10px;
 }
 
-.search-form input[type="text"] {
-    flex: 1; /* Take up remaining space */
+.search-form form input, .search-form form button {
     padding: 10px;
-    margin-right: 10px;
     border: none;
-    border-radius: 3px;
-    width: 100%; /* Take full width of parent */
-    max-width: 500px; /* Set maximum width to avoid stretching too much */
+    border-radius: 5px;
+    outline: none;
 }
 
-.search-form button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 3px;
+.search-form form input {
+    flex: 1;
+}
+
+.search-form form button {
     background-color: #7289da;
-    color: white;
+    color: #fff;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.search-form button:hover {
+.search-form form button:hover {
     background-color: #5b6eae;
 }
 
-.sidebar ul li a,
-.main-content .sidebar ul li a {
-    text-decoration: none; /* Remove underline from hyperlinks */
-    color: white; /* Ensure text color is maintained */
+.search-results {
+    margin-top: 20px;
 }
 
-.sidebar ul li a:hover,
-.main-content .sidebar ul li a:hover {
-    text-decoration: underline; /* Add underline on hover if needed */
+.search-results h3 {
+    margin-bottom: 10px;
+}
+
+.search-results ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.search-results ul li {
+    margin-bottom: 10px;
+}
+
+.search-results ul li a {
+    color: #7289da;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat .messages {
+    flex: 1;
+    padding: 20px;
+    background-color: #36393f;
+    border-radius: 5px;
+    overflow-y: auto;
 }

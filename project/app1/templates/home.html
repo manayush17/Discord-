@@ -21,9 +21,8 @@
             <h2>Welcome, {{ user.username }}</h2>
             <h2>Channels</h2>
             <ul>
-                <li>general</li>
-                <li>random</li>
-                <li>help</li>
+                
+                <li><a class="redir" href="{% url 'home' %}">Chat</a></li>
             </ul>
             <h2>Created Servers</h2>
             <ul>
@@ -41,23 +40,33 @@
         <div class="main-content">
             <div class="friends">
                 <nav>
-                    <a href="#">Online</a>
-                    <a href="#">All</a>
-                    <a href="#">Pending</a>
-                    <a href="#">Blocked</a>
-                    <a href="#">Add Friends</a>
+                    <a href="{% url 'friends_list' %}">All Friends</a>
+                    <a href="{% url 'pending_requests' %}">Pending Requests</a>
                 </nav>
-            </div>
-            <main class="chat">
-                <h2>Chat Area</h2>
+                <!-- Search form -->
                 <div class="search-form">
-                    <!-- Search form to add friend by username -->
                     <form method="post" action="">
                         {% csrf_token %}
-                        <input type="text" name="username" placeholder="Add friend with Discord username" required>
+                        {{ search_form.as_p }}
                         <button type="submit">Search</button>
                     </form>
                 </div>
+                <!-- Display search results -->
+                <div class="search-results">
+                    {% if search_results %}
+                        <h3>Search Results</h3>
+                        <ul>
+                            {% for result in search_results %}
+                                <li>{{ result.username }} <a href="{% url 'send_friend_request' result.id %}">Send Friend Request</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No users found.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <main class="chat">
+                <h2>Chat Area</h2>
                 <div class="messages">
                     <!-- Messages will be displayed here -->
                 </div>
