@@ -1,176 +1,172 @@
-/* styles2.css */
-
-/* Reset CSS */
-body, h1, h2, ul, li, nav, header, div, a, form {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #2f3136;
-    color: #dcddde;
+    background-color: #2c2f33;
+    color: #fff;
+    margin: 0;
+    padding: 0;
 }
 
 header {
-    background-color: #7289da;
-    padding: 20px;
+    background-color: #23272a;
+    padding: 1em;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 header h1 {
     margin: 0;
-    color: #fff;
 }
 
-header nav {
-    margin-top: 10px;
+nav {
+    margin-top: 1em;
 }
 
-header nav .redir {
-    color: #fff;
+nav a {
+    color: #7289da;
+    margin: 0 1em;
     text-decoration: none;
-    margin: 0 10px;
-    padding: 10px;
-    background-color: #3b3d41;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
-header nav .redir:hover {
-    background-color: #5b6eae;
+nav a:hover {
+    text-decoration: underline;
 }
 
 .container {
     display: flex;
-    flex: 1;
+    height: calc(100vh - 80px); /* Adjust for header height */
 }
 
 .sidebar {
-    width: 250px;
     background-color: #2f3136;
-    padding: 20px;
-    border-right: 1px solid #202225;
+    padding: 1em;
+    width: 20%;
+    box-sizing: border-box;
 }
 
 .sidebar h2 {
     font-size: 1.2em;
-    margin-bottom: 10px;
+    margin-bottom: 1em;
 }
 
 .sidebar ul {
     list-style: none;
-    padding-left: 0;
+    padding: 0;
 }
 
 .sidebar ul li {
-    margin-bottom: 10px;
+    margin-bottom: 1em;
 }
 
 .sidebar ul li a {
-    color: #b9bbbe;
+    color: #7289da;
     text-decoration: none;
-    padding: 10px;
-    display: block;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 .sidebar ul li a:hover {
-    background-color: #40444b;
+    text-decoration: underline;
 }
 
 .main-content {
     flex: 1;
-    padding: 20px;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.friends {
+    margin-bottom: 2em;
+}
+
+.friends nav {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1em;
 }
 
 .friends nav a {
-    color: #b9bbbe;
+    color: #7289da;
     text-decoration: none;
-    margin-right: 20px;
-    padding: 10px;
-    background-color: #3b3d41;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 .friends nav a:hover {
-    background-color: #5b6eae;
+    text-decoration: underline;
 }
 
 .search-form {
-    margin: 20px 0;
+    margin-bottom: 1em;
 }
 
 .search-form form {
     display: flex;
-    gap: 10px;
+    align-items: center;
 }
 
-.search-form form input, .search-form form button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
-
-.search-form form input {
+.search-form input[type="text"] {
     flex: 1;
+    padding: 0.5em;
+    margin-right: 0.5em;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
-.search-form form button {
+.search-form button {
+    padding: 0.5em 1em;
+    border: none;
     background-color: #7289da;
-    color: #fff;
+    color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 4px;
 }
 
-.search-form form button:hover {
+.search-form button:hover {
     background-color: #5b6eae;
 }
 
 .search-results {
-    margin-top: 20px;
+    margin-top: 1em;
+    background-color: #2f3136;
+    padding: 1em;
+    border-radius: 4px;
 }
 
 .search-results h3 {
-    margin-bottom: 10px;
+    margin-top: 0;
 }
 
 .search-results ul {
     list-style: none;
-    padding-left: 0;
+    padding: 0;
 }
 
 .search-results ul li {
-    margin-bottom: 10px;
+    margin-bottom: 0.5em;
 }
 
 .search-results ul li a {
     color: #7289da;
     text-decoration: none;
-    margin-left: 10px;
+}
+
+.search-results ul li a:hover {
+    text-decoration: underline;
 }
 
 .chat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    background-color: #36393f;
+    padding: 1em;
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 60vh;
+    overflow-y: auto;
 }
 
-.chat .messages {
-    flex: 1;
-    padding: 20px;
-    background-color: #36393f;
-    border-radius: 5px;
+.chat h2 {
+    margin-top: 0;
+}
+
+.messages {
+    background-color: #2f3136;
+    padding: 1em;
+    border-radius: 4px;
+    height: calc(100% - 40px);
     overflow-y: auto;
 }
