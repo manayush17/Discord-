@@ -58,7 +58,6 @@ class ChannelForm(forms.ModelForm):
 class FriendRequestForm(forms.ModelForm):
     class Meta:
         model = FriendRequest
-        fields = []  # No fields here since sender and receiver will be set in views
-
+        fields = []  
 class SearchForm(forms.Form):
     username = forms.CharField(max_length=100)

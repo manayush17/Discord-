@@ -83,11 +83,8 @@ def home(request):
     user = request.user
     created_servers = Server.objects.filter(owner=user)
     joined_servers = Server.objects.filter(memberships__user=user).exclude(owner=user)
-    
-    # Handling friend request form submission
     search_form = SearchForm()
     search_results = []
-
     if request.method == 'POST':
         search_form = SearchForm(request.POST)
         if search_form.is_valid():
@@ -180,3 +177,13 @@ def server_detail(request, server_id):
         'channels': server.channels.all(),
         'memberships': memberships,
     })
+
+def server_detail(request, server_id):
+    server = Server.objects.get(id=server_id)
+    if request.method == 'POST':
+        if request.user == server.owner:
+            channel_name = request.POST.get('name')
+            if channel_name:
+                Channel.objects.create(name=channel_name, server=server)
+                return redirect('server_detail', server_id=server.id)
+    return render(request, 'server_detail.html', {'server': server})
