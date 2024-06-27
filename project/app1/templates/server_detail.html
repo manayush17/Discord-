@@ -1,5 +1,5 @@
+<!-- server_detail.html -->
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,6 +39,49 @@
             </form>
             {% if invite_link %}
             <p>Invite Link: <a href="{{ invite_link }}">{{ invite_link }}</a></p>
+            {% endif %}
+
+            <h2>Owner</h2>
+            <p>{{ owner.username }}</p>
+
+            <h2>Moderators</h2>
+            <ul>
+                {% for membership in moderators %}
+                <li>
+                    {{ membership.user.username }}
+                    {% if request.user == server.owner %}
+                    <form method="post" action="{% url 'demote_to_member' server.id membership.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Demote to Member</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li>No moderators yet.</li>
+                {% endfor %}
+            </ul>
+
+            {% if request.user == server.owner %}
+            <h2>All Members</h2>
+            <ul>
+                {% for membership in memberships %}
+                <li>
+                    {{ membership.user.username }} ({{ membership.role }})
+                    {% if membership.role == 'member' %}
+                    <form method="post" action="{% url 'promote_to_moderator' server.id membership.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Promote to Moderator</button>
+                    </form>
+                    {% endif %}
+                    {% if request.user == server.owner or membership.role == 'member' %}
+                    <form method="post" action="{% url 'remove_member' server.id membership.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Remove Member</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
             {% endif %}
         </div>
     </div>

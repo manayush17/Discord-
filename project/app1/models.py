@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import User
 import random
@@ -13,11 +14,16 @@ class Server(models.Model):
         return self.name
 
 class Membership(models.Model):
+    ROLE_CHOICES = [
+        ('member', 'Member'),
+        ('moderator', 'Moderator'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='memberships')
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='memberships')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
 
     def __str__(self):
-        return f"{self.user.username} - {self.server.name}"
+        return f"{self.user.username} - {self.server.name} ({self.role})"
 
 class Channel(models.Model):
     name = models.CharField(max_length=100)
@@ -59,7 +65,7 @@ class Invitation(models.Model):
         super().save(*args, **kwargs)
 
     def is_valid(self):
-        return True  # Simplified for demonstration
+        return True  
 
     def __str__(self):
         return f"Invitation to {self.server.name}"
