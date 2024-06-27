@@ -59,5 +59,6 @@ class FriendRequestForm(forms.ModelForm):
     class Meta:
         model = FriendRequest
         fields = []  
+
 class SearchForm(forms.Form):
-    username = forms.CharField(max_length=100)
+    username = forms.CharField(max_length=150, required=True, label='Search for a user')

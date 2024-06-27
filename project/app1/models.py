@@ -39,14 +39,14 @@ class FriendRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.sender} -> {self.receiver}: {self.status}"
+        return f"{self.sender.username} -> {self.receiver.username}: {self.status}"
 
 class Friendship(models.Model):
     user1 = models.ForeignKey(User, related_name='user1_friendships', on_delete=models.CASCADE)
     user2 = models.ForeignKey(User, related_name='user2_friendships', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user1} - {self.user2}"
+        return f"{self.user1.username} - {self.user2.username}"
 
 class Invitation(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)
@@ -63,3 +63,18 @@ class Invitation(models.Model):
 
     def __str__(self):
         return f"Invitation to {self.server.name}"
+
+class Room(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Message(models.Model):
+    user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.content}"

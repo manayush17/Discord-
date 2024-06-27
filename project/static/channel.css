@@ -1,0 +1,137 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #36393f;
+    color: #dcddde;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: #2f3136;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    color: #fff;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.sidebar .channels {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .channels li {
+    margin: 10px 0;
+}
+
+.sidebar .channels li a {
+    color: #dcddde;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.sidebar .channels li.active a,
+.sidebar .channels li a:hover {
+    background-color: #40444b;
+}
+
+/* Main Content Styles */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: #202225;
+    padding: 10px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+/* Chat Styles */
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #36393f;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #40444b;
+    border-radius: 5px;
+}
+
+.message strong {
+    color: #fff;
+    display: block;
+}
+
+.message p {
+    margin: 5px 0;
+}
+
+.message small {
+    display: block;
+    color: #72767d;
+}
+
+form {
+    display: flex;
+    margin-top: 20px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #202225;
+    border-radius: 5px;
+    background-color: #40444b;
+    color: #dcddde;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #5865f2;
+    color: white;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4752c4;
+}

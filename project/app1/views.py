@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect ,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation
+from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation ,Room , Message
 import random,string
 
 @never_cache
@@ -85,12 +85,20 @@ def home(request):
     joined_servers = Server.objects.filter(memberships__user=user).exclude(owner=user)
     search_form = SearchForm()
     search_results = []
+
     if request.method == 'POST':
         search_form = SearchForm(request.POST)
         if search_form.is_valid():
             username = search_form.cleaned_data['username']
             search_results = User.objects.filter(username__icontains=username).exclude(username=user.username)
-    
+            for result in search_results:
+                result.already_friends = (
+                    Friendship.objects.filter(user1=user, user2=result).exists() or
+                    Friendship.objects.filter(user1=result, user2=user).exists() or
+                    FriendRequest.objects.filter(sender=user, receiver=result, status='pending').exists() or
+                    FriendRequest.objects.filter(sender=result, receiver=user, status='pending').exists()
+                )
+
     return render(request, 'home.html', {
         'created_servers': created_servers,
         'joined_servers': joined_servers,
@@ -98,12 +106,16 @@ def home(request):
         'search_results': search_results,
     })
 
+
 @login_required
 def send_friend_request(request, receiver_id):
     receiver = get_object_or_404(User, id=receiver_id)
-    if receiver != request.user and not FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists():
-        FriendRequest.objects.create(sender=request.user, receiver=receiver)
+    if receiver != request.user:
+        if not FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists():
+            if not Friendship.objects.filter(user1=request.user, user2=receiver).exists() and not Friendship.objects.filter(user1=receiver, user2=request.user).exists():
+                FriendRequest.objects.create(sender=request.user, receiver=receiver)
     return redirect('home')
+
 
 @login_required
 def accept_friend_request(request, request_id):
@@ -135,12 +147,10 @@ def pending_requests(request):
     pending_requests = FriendRequest.objects.filter(receiver=user, status='pending')
     return render(request, 'pending_requests.html', {'pending_requests': pending_requests})
 
-
 def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
-    channel = get_object_or_404(Channel, id=channel_id, server=server)
+    channel = get_object_or_404(Channel, id=channel_id)
     return render(request, 'channel_detail.html', {'server': server, 'channel': channel})
-
 
 @login_required
 def create_invitation(request, server_id):
@@ -187,3 +197,8 @@ def server_detail(request, server_id):
                 Channel.objects.create(name=channel_name, server=server)
                 return redirect('server_detail', server_id=server.id)
     return render(request, 'server_detail.html', {'server': server})
+
+def room(request, room_name):
+    room = get_object_or_404(Room, name=room_name)
+    messages = room.messages.order_by('timestamp')
+    return render(request, 'room.html', {'room': room, 'messages': messages})

@@ -14,8 +14,9 @@ urlpatterns = [
     path('accept_friend_request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
     path('reject_friend_request/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
     path('friends_list/', views.friends_list, name='friends_list'),
-    path('server/<int:server_id>/channel/<int:channel_id>/', views.channel_detail, name='channel_detail'),
+     path('server/<int:server_id>/channel/<int:channel_id>/', views.channel_detail, name='channel_detail'),
     path('pending_requests/', views.pending_requests, name='pending_requests'),
     path('create_invitation/<int:server_id>/', views.create_invitation, name='create_invitation'),
     path('invite/<str:code>/', views.join_via_invitation, name='join_via_invitation'),
+    path('chat/<str:room_name>/', views.room, name='room'),
 ]

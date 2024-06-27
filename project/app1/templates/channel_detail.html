@@ -1,51 +1,48 @@
+<!-- app1/templates/channel_detail.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ channel.name }} - Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding-top: 10px;
-            min-height: 70px;
-            border-bottom: #0779e4 3px solid;
-        }
-        header h1 {
-            margin: 0;
-            padding-bottom: 10px;
-        }
-        .main {
-            padding: 20px;
-            background: #fff;
-            margin-top: 30px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>{{ channel.name }}</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatSocket = new WebSocket(
+                'ws://' + window.location.host + '/ws/chat/{{ channel.id }}/'  // Corrected concatenation
+            );
+
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                const chatLog = document.querySelector('#chat-log');
+                chatLog.value += (data.username + ': ' + data.message + '\n');
+                chatLog.scrollTop = chatLog.scrollHeight;
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            document.querySelector('#chat-message-input').focus();
+            document.querySelector('#chat-message-input').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // Enter key
+                    document.querySelector('#chat-message-submit').click();
+                }
+            };
+
+            document.querySelector('#chat-message-submit').onclick = function(e) {
+                const messageInputDom = document.querySelector('#chat-message-input');
+                const message = messageInputDom.value;
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            };
+        });
+    </script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>{{ channel.name }}</h1>
-        </div>
-    </header>
-    <div class="container">
-        <div class="main">
-            <h2>Channel Details</h2>
-            <p>Server: {{ server.name }}</p>
-            <p>Channel Name: {{ channel.name }}</p>
-        </div>
-    </div>
+    <h1>{{ channel.name }}</h1>
+    <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <button id="chat-message-submit">Send</button>
 </body>
 </html>
