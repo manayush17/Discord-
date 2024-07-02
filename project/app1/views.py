@@ -147,10 +147,6 @@ def pending_requests(request):
     pending_requests = FriendRequest.objects.filter(receiver=user, status='pending')
     return render(request, 'pending_requests.html', {'pending_requests': pending_requests})
 
-def channel_detail(request, server_id, channel_id):
-    server = get_object_or_404(Server, id=server_id)
-    channel = get_object_or_404(Channel, id=channel_id)
-    return render(request, 'channel_detail.html', {'server': server, 'channel': channel})
 
 @login_required
 def create_invitation(request, server_id):
@@ -175,21 +171,6 @@ def join_via_invitation(request, code):
         return redirect('server_detail', server_id=server.id)
     return redirect('confirm_join_server', code=code)
 
-def server_detail(request, server_id):
-    server = Server.objects.get(id=server_id)
-    if request.method == 'POST':
-        if request.user == server.owner:
-            channel_name = request.POST.get('name')
-            if channel_name:
-                Channel.objects.create(name=channel_name, server=server)
-                return redirect('server_detail', server_id=server.id)
-    return render(request, 'server_detail.html', {'server': server})
-
-def room(request, room_name):
-    room = get_object_or_404(Room, name=room_name)
-    messages = room.messages.order_by('timestamp')
-    return render(request, 'room.html', {'room': room, 'messages': messages})
-
 @login_required
 def confirm_join_server(request, code):
     invitation = get_object_or_404(Invitation, code=code)
@@ -203,41 +184,74 @@ def confirm_join_server(request, code):
 def promote_to_moderator(request, server_id, user_id):
     server = get_object_or_404(Server, id=server_id)
     if request.user != server.owner:
-        return HttpResponse("You are not the owner of this server.", status=403)
-    membership = get_object_or_404(Membership, server=server, user_id=user_id)
+        return redirect('server_detail', server_id=server.id)
+
+    user = get_object_or_404(User, id=user_id)
+    membership = get_object_or_404(Membership, user=user, server=server)
     membership.role = 'moderator'
     membership.save()
+
     return redirect('server_detail', server_id=server.id)
 
 @login_required
 def demote_to_member(request, server_id, user_id):
     server = get_object_or_404(Server, id=server_id)
     if request.user != server.owner:
-        return HttpResponse("You are not the owner of this server.", status=403)
-    membership = get_object_or_404(Membership, server=server, user_id=user_id)
+        return redirect('server_detail', server_id=server.id)
+
+    user = get_object_or_404(User, id=user_id)
+    membership = get_object_or_404(Membership, user=user, server=server)
     membership.role = 'member'
     membership.save()
+
     return redirect('server_detail', server_id=server.id)
 
 @login_required
 def remove_member(request, server_id, user_id):
     server = get_object_or_404(Server, id=server_id)
-    if not Membership.objects.filter(user=request.user, server=server, role='moderator').exists() and request.user != server.owner:
-        return HttpResponse("You do not have permission to remove members.", status=403)
-    membership = get_object_or_404(Membership, server=server, user_id=user_id)
-    if membership.role == 'moderator' and request.user != server.owner:
-        return HttpResponse("Only the owner can remove a moderator.", status=403)
-    membership.delete()
+    if request.user != server.owner and request.user.memberships.get(server=server).role != 'moderator':
+        return redirect('server_detail', server_id=server.id)
+
+    user = get_object_or_404(User, id=user_id)
+    membership = get_object_or_404(Membership, user=user, server=server)
+    if user != server.owner:
+        membership.delete()
+
     return redirect('server_detail', server_id=server.id)
 
 @login_required
 def server_detail(request, server_id):
     server = get_object_or_404(Server, id=server_id)
     memberships = server.memberships.all()
+    is_moderator = Membership.objects.filter(user=request.user, server=server, role='moderator').exists()
+
+    if request.method == 'POST' and 'name' in request.POST:
+        if request.user == server.owner or is_moderator:
+            channel_form = ChannelForm(request.POST)
+            if channel_form.is_valid():
+                channel = channel_form.save(commit=False)
+                channel.server = server
+                channel.save()
+                return redirect('server_detail', server_id=server.id)
+    else:
+        channel_form = ChannelForm()
+
     return render(request, 'server_detail.html', {
         'server': server,
         'channels': server.channels.all(),
         'memberships': memberships,
         'owner': server.owner,
         'moderators': memberships.filter(role='moderator'),
+        'channel_form': channel_form,
     })
+
+@login_required
+def channel_detail(request, server_id, channel_id):
+    server = get_object_or_404(Server, id=server_id)
+    channel = get_object_or_404(Channel, id=channel_id)
+    
+    context = {
+        'server': server,
+        'channel': channel,
+    }
+    return render(request, "channel_detail.html", context)
