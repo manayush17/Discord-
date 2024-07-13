@@ -7,25 +7,29 @@
     <link rel="stylesheet" type="text/css" href="{% static 'channel.css' %}">
 </head>
 <body>
-    <center><h1> Welcome to {{ channel.name }}, {{ request.user }}</h1></center>
+    <center><h1>Welcome to {{ channel.name }}, {{ request.user }}</h1></center>
     <br>
     {% if request.user.is_authenticated %}
-    <center>Logout the chat Page <a href="{% url 'logout' %}">Logout</a></center>
+    <center>Go to Home Page <a href="{% url 'home' %}">HOME</a></center>
     {% endif %}
     <div class="chat__item__container" id="id_chat_item_container">
-        <div id="id_chat_log"></div>
+        <div id="id_chat_log">
+            {% for message in messages %}
+            <div>{{ message.user.username }} : {{ message.content }}</div>
+            {% endfor %}
+        </div>
         <div>
             <input type="text" id="id_message_send_input" />
             <button type="submit" id="id_message_send_button">Send Message</button>
         </div>
     </div>
     <script>
-        const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/{{ channel.id }}/");
         chatSocket.onopen = function (e) {
-            console.log("The connection was setup successfully !");
+            console.log("The connection was setup successfully!");
         };
         chatSocket.onclose = function (e) {
-            console.log("Something unexpected happened !");
+            console.log("Something unexpected happened!");
         };
         document.querySelector("#id_message_send_input").focus();
         document.querySelector("#id_message_send_input").onkeyup = function (e) {

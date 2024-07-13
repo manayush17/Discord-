@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect ,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation ,FileUpload,Message
+from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation ,FileUpload
 from django.http import JsonResponse
 
 @never_cache
@@ -249,22 +249,14 @@ def server_detail(request, server_id):
 def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
     channel = get_object_or_404(Channel, id=channel_id)
-    messages = Message.objects.filter(channel=channel).select_related('user')
-
+    
+    if request.method == "POST" and request.FILES:
+        file = request.FILES['file']
+        FileUpload.objects.create(user=request.user, channel=channel, file=file)
+        return JsonResponse({"success": True})
+    
     context = {
         'server': server,
         'channel': channel,
-        'messages': messages,
     }
     return render(request, "channel_detail.html", context)
-
-@login_required
-def channel_file_upload(request, server_id, channel_id):
-    channel = get_object_or_404(Channel, id=channel_id)
-    
-    if request.method == 'POST' and request.FILES:
-        file = request.FILES['file']
-        FileUpload.objects.create(user=request.user, channel=channel, file=file)
-        return JsonResponse({'success': True})
-    
-    return JsonResponse({'success': False, 'error': 'Invalid request.'})

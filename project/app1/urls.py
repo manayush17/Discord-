@@ -22,5 +22,6 @@ urlpatterns = [
     path('server/<int:server_id>/promote/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
     path('server/<int:server_id>/demote/<int:user_id>/', views.demote_to_member, name='demote_to_member'),
     path('server/<int:server_id>/remove/<int:user_id>/', views.remove_member, name='remove_member'),
-      path('servers/<int:server_id>/channels/<int:channel_id>/', views.channel_detail, name='channel_detail'),
+    path('servers/<int:server_id>/channels/<int:channel_id>/', views.channel_detail, name='channel_detail'),
+    path('servers/<int:server_id>/channels/<int:channel_id>/upload/', views.channel_file_upload, name='channel_file_upload'),
 ]

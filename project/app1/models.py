@@ -84,3 +84,9 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.content}"
+
+class FileUpload(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='uploads/%Y/%m/%d/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
