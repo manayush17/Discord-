@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, ServerForm, ChannelForm,  SearchForm
+from .forms import RegistrationForm, ServerForm, ChannelForm, FriendRequestForm, SearchForm
 from django.http import HttpResponseRedirect ,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -236,40 +236,31 @@ def server_detail(request, server_id):
                 return redirect('server_detail', server_id=server.id)
     else:
         channel_form = ChannelForm()
-    text_channels = server.channels.filter(channel_type=Channel.TEXT)
-    video_channels = server.channels.filter(channel_type=Channel.VIDEO)
 
     return render(request, 'server_detail.html', {
         'server': server,
-        'text_channels': text_channels,
-        'video_channels': video_channels,
+        'channels': server.channels.all(),
         'memberships': memberships,
         'owner': server.owner,
         'moderators': memberships.filter(role='moderator'),
         'channel_form': channel_form,
     })
 
+
 @login_required
 def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
     channel = get_object_or_404(Channel, id=channel_id)
+    messages = Message.objects.filter(channel=channel).order_by('timestamp')
+    file_uploads = FileUpload.objects.filter(channel=channel).order_by('uploaded_at')
 
-    if channel.channel_type == 'text':
-        messages = Message.objects.filter(channel=channel).order_by('timestamp')
-        file_uploads = FileUpload.objects.filter(channel=channel).order_by('uploaded_at')
-        context = {
-            'server': server,
-            'channel': channel,
-            'messages': messages,
-            'file_uploads': file_uploads,
-        }
-        return render(request, "channel_detail.html", context)
-    elif channel.channel_type == 'video':
-        context = {
-            'server': server,
-            'channel': channel,
-        }
-        return render(request, "videochannel_detail.html", context)
+    context = {
+        'server': server,
+        'channel': channel,
+        'messages': messages,
+        'file_uploads': file_uploads,
+    }
+    return render(request, "channel_detail.html", context)
 
 
 @csrf_exempt

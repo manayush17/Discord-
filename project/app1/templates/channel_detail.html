@@ -7,21 +7,33 @@
     <link rel="stylesheet" type="text/css" href="{% static 'channel.css' %}">
 </head>
 <body>
-    <center><h1>Welcome to {{ channel.name }}, {{ request.user }}</h1></center>
-    <br>
-    {% if request.user.is_authenticated %}
-    <center>Go to Home Page <a href="{% url 'home' %}">HOME</a></center>
-    {% endif %}
-    <div class="chat__item__container" id="id_chat_item_container">
-        <div id="id_chat_log">
-            {% for message in messages %}
-            <div>{{ message.user.username }} : {{ message.content }}</div>
-            {% endfor %}
-        </div>
-        <div>
-            <input type="text" id="id_message_send_input" />
-            <button type="submit" id="id_message_send_button">Send Message</button>
-        </div>
+    <div class="chat-page-container">
+        <header>
+            <h1>Welcome to {{ channel.name }}, {{ request.user }}</h1>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'home' %}" class="home-link">Go to Home Page</a>
+            {% endif %}
+        </header>
+        <main>
+            <div class="chat__item__container" id="id_chat_item_container">
+                <div id="id_chat_log">
+                    {% for message in messages %}
+                    <div class="chat-message">{{ message.user.username }} : {{ message.content }}</div>
+                    {% endfor %}
+                    {% for file in file_uploads %}
+                    <div class="chat-message">{{ file.user.username }} : <a href="{{ file.file.url }}" download>{{ file.file.name }}</a></div>
+                    {% endfor %}
+                </div>
+                <div class="input-container">
+                    <input type="text" id="id_message_send_input" placeholder="Type a message..." />
+                    <button type="submit" id="id_message_send_button">Send Message</button>
+                </div>
+                <div class="input-container">
+                    <input type="file" id="id_file_send_input" />
+                    <button type="submit" id="id_file_send_button">Send File</button>
+                </div>
+            </div>
+        </main>
     </div>
     <script>
         const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/{{ channel.id }}/");
@@ -41,10 +53,25 @@
             var messageInput = document.querySelector("#id_message_send_input").value;
             chatSocket.send(JSON.stringify({ message: messageInput, username: "{{ request.user.username }}" }));
         };
+        document.querySelector("#id_file_send_button").onclick = function (e) {
+            var fileInput = document.querySelector("#id_file_send_input").files[0];
+            var formData = new FormData();
+            formData.append("file", fileInput);
+            formData.append("channel_id", "{{ channel.id }}");  // Include channel_id in the form data
+            fetch("{% url 'upload_file' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            }).then(response => response.json()).then(data => {
+                chatSocket.send(JSON.stringify({ file_name: data.file_name, username: "{{ request.user.username }}" }));
+            });
+        };
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             var div = document.createElement("div");
-            div.innerHTML = data.username + " : " + data.message;
+            div.innerHTML = data.username + " : " + (data.message || data.file_name);
             document.querySelector("#id_message_send_input").value = "";
             document.querySelector("#id_chat_log").appendChild(div);
         };

@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Message, Channel
+from .models import Message, Channel, FileUpload
 from django.contrib.auth.models import User
 from asgiref.sync import sync_to_async
 
@@ -24,12 +24,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+        message_content = text_data_json.get("message", "")
         username = text_data_json["username"]
+        file_name = text_data_json.get("file_name")
 
         user = await sync_to_async(User.objects.get)(username=username)
         channel = await sync_to_async(Channel.objects.get)(id=self.channel_id)
-        message = await sync_to_async(Message.objects.create)(channel=channel, user=user, content=message)
+
+        if file_name:
+            file_instance = await sync_to_async(FileUpload.objects.create)(channel=channel, user=user, file=file_name)
+            message_content = f"File: {file_instance.file.url}"
+
+        message = await sync_to_async(Message.objects.create)(channel=channel, user=user, content=message_content)
 
         await self.channel_layer.group_send(
             self.channel_group_name, {

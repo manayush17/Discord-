@@ -1,4 +1,3 @@
-<!-- server_detail.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,18 +13,30 @@
     </header>
     <div class="container">
         <div class="sidebar">
-            <h2>Channels</h2>
+            <h2>Text Channels</h2>
             <ul class="channels">
-                {% for channel in server.channels.all %}
-                <li><a href="{% url 'channel_detail' server_id=server.id channel_id=channel.id %}">{{ channel.name }}</a></li>
+                {% for channel in text_channels %}
+                <li><a href="{% url 'channel_detail' server.id channel.id %}">{{ channel.name }}</a></li>
                 {% empty %}
-                <li>No channels available.</li>
+                <li>No text channels available.</li>
                 {% endfor %}
             </ul>
-            {% if request.user == server.owner %}
+            <h2>Video Channels</h2>
+            <ul class="channels">
+                {% for channel in video_channels %}
+                <li><a href="{% url 'channel_detail' server.id channel.id %}">{{ channel.name }}</a></li>
+                {% empty %}
+                <li>No video channels available.</li>
+                {% endfor %}
+            </ul>
+            {% if request.user == server.owner or is_moderator %}
             <form class="create-channel-form" method="post">
                 {% csrf_token %}
-                <input type="text" name="name" placeholder="Enter channel name">
+                <input type="text" name="name" placeholder="Enter channel name" required>
+                <select name="channel_type" required>
+                    <option value="text">Text Channel</option>
+                    <option value="video">Video Channel</option>
+                </select>
                 <button type="submit">Create Channel</button>
             </form>
             {% endif %}

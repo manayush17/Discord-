@@ -25,19 +25,12 @@ class Membership(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.server.name} ({self.role})"
 
-
 class Channel(models.Model):
-    TEXT = 'text'
-    VIDEO = 'video'
-    CHANNEL_TYPES = [
-        (TEXT, 'Text'),
-        (VIDEO, 'Video'),
-    ]
-    
-    name = models.CharField(max_length=255)
-    channel_type = models.CharField(max_length=10, choices=CHANNEL_TYPES, default=TEXT)
-    server = models.ForeignKey(Server, related_name='channels', on_delete=models.CASCADE)
-    users = models.ManyToManyField(User, blank=True)
+    name = models.CharField(max_length=100)
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name='channels')
+
+    def __str__(self):
+        return self.name
 
 class FriendRequest(models.Model):
     STATUS_CHOICES = (

@@ -53,7 +53,7 @@ class ServerForm(forms.ModelForm):
 class ChannelForm(forms.ModelForm):
     class Meta:
         model = Channel
-        fields = ['name']
+        fields = ['name', 'channel_type']
 
 class FriendRequestForm(forms.ModelForm):
     class Meta:
