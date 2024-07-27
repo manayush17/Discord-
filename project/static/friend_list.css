@@ -1,9 +1,11 @@
-
-body, h1, h2, ul, li, nav, header, div, a, p {
+/* Reset CSS */
+body, h1, ul, li, p, a {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -15,8 +17,10 @@ body {
 
 header {
     background-color: #7289da;
-    padding: 20px;
-    text-align: center;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -25,55 +29,52 @@ header h1 {
     color: #fff;
 }
 
-header nav {
-    margin-top: 10px;
-}
-
-header nav .redir {
+header nav a.redir {
     color: #fff;
     text-decoration: none;
-    margin: 0 10px;
-    padding: 10px;
-    background-color: #3b3d41;
+    padding: 10px 15px;
+    background-color: #7289da;
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-header nav .redir:hover {
+header nav a.redir:hover {
     background-color: #5b6eae;
 }
 
 .container {
     padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: #36393f;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-    margin-bottom: 20px;
-}
-
-ul {
+.friends-list {
+    width: 100%;
+    max-width: 800px;
     list-style: none;
-    padding-left: 0;
+    padding: 0;
+    margin: 0;
 }
 
-ul li {
-    background-color: #3b3d41;
-    padding: 10px;
+.friends-list li {
+    padding: 15px;
     margin-bottom: 10px;
+    background-color: #2f3136;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    color: #b9bbbe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-ul li:hover {
+.friends-list li:hover {
     background-color: #40444b;
 }
 
-p {
-    text-align: center;
-    font-size: 1.1em;
+.no-friends {
+    margin-top: 10px;
+    color: #b9bbbe;
 }

@@ -57,7 +57,7 @@
             var fileInput = document.querySelector("#id_file_send_input").files[0];
             var formData = new FormData();
             formData.append("file", fileInput);
-            formData.append("channel_id", "{{ channel.id }}");  // Include channel_id in the form data
+            formData.append("channel_id", "{{ channel.id }}");  
             fetch("{% url 'upload_file' %}", {
                 method: "POST",
                 body: formData,

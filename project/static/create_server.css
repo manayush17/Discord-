@@ -1,5 +1,4 @@
-
-body, h2, form, div, button {
+body, h2, form, div, button, label {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -17,14 +16,16 @@ body {
 
 .server_container {
     background-color: #2f3136;
-    padding: 20px 40px;
+    padding: 30px 40px; /* Increased padding for better spacing */
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     text-align: center;
+    border: 2px solid #00ffff; /* Aqua-colored border */
 }
 
 h2 {
     margin-bottom: 20px;
+    font-size: 1.8em; /* Increased font size for headings */
 }
 
 .form {
@@ -32,31 +33,46 @@ h2 {
 }
 
 .form p {
-    margin-bottom: 10px;
+    margin-bottom: 15px; /* Increased margin for better spacing */
     text-align: left;
+    font-size: 1.2em; /* Increased font size for better readability */
 }
 
 input[type="text"], input[type="password"], textarea, select {
     width: 100%;
-    padding: 10px;
+    padding: 12px; /* Increased padding for better input appearance */
     margin-top: 8px;
     margin-bottom: 15px;
-    border: none;
+    border: 2px solid #7289da; /* Border with theme color */
     border-radius: 5px;
     background-color: #40444b;
     color: #dcddde;
+    font-size: 1.1em; /* Adjusted font size */
+}
+
+input[type="checkbox"] {
+    width: 25px; /* Increased checkbox size */
+    height: 25px; /* Increased checkbox size */
+    margin-right: 10px; /* Spacing between checkbox and label */
+    vertical-align: middle; /* Align checkbox with text */
 }
 
 button {
     background-color: #7289da; 
     color: #fff;
-    padding: 10px 20px;
+    padding: 12px 20px; /* Adjusted padding for better button appearance */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 1.1em; /* Increased font size for button text */
 }
 
 button:hover {
     background-color: #5b6eae; 
+}
+
+label {
+    font-size: 1.2em; /* Increase font size for labels */
+    margin-bottom: 10px; /* Spacing between label and input */
 }

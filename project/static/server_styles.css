@@ -1,29 +1,17 @@
-/* styles.css */
-
-/* Reset CSS */
-body, h1, h2, ul, li, p {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #2f3136;
-    color: #dcddde;
+    background-color: #2c2f33;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 header {
-    background-color: #7289da;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #23272a;
+    padding: 0.5em;
+    text-align: center;
+    border-bottom: 2px solid #1e90ff;
 }
 
 header h1 {
@@ -33,82 +21,40 @@ header h1 {
 
 .container {
     display: flex;
-    flex: 1;
+    height: calc(100vh - 60px);
+    border-top: 2px solid #1e90ff;
 }
 
 .sidebar {
-    width: 220px;
-    background-color: #202225;
-    padding: 20px;
+    background-color: #2f3136;
+    padding: 1em;
+    width: 15%;
     box-sizing: border-box;
+    border-right: 2px solid #1e90ff;
+    height: 100%;
 }
 
 .sidebar h2 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #b9bbbe;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+    border-bottom: 2px solid #1e90ff;
+    padding-bottom: 0.5em;
 }
 
-.sidebar ul {
+.channels, .servers, .actions {
     list-style: none;
     padding: 0;
 }
 
-.sidebar ul li {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #2f3136;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #b9bbbe;
+.channels li, .servers li, .actions li {
+    margin-bottom: 1em;
 }
 
-.sidebar ul li:hover {
-    background-color: #40444b;
-}
-
-.sidebar ul li a {
-    color: #b9bbbe;
+.channels li a, .servers li a, .actions li a {
+    color: #7289da;
     text-decoration: none;
-}
-
-.main {
-    flex: 1;
-    padding: 20px;
-    background-color: #36393f;
-}
-
-.main h2 {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #2f3136;
-    color: #fff;
-}
-
-.main p {
-    margin-top: 10px;
-    color: #dcddde;
-}
-
-.create-channel-form,
-.invite-form {
-    margin-top: 20px;
-}
-
-.create-channel-form input[type="text"],
-.invite-form input[type="text"],
-.create-channel-form button,
-.invite-form button {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #7289da;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
-}
-
-.create-channel-form button:hover,
-.invite-form button:hover {
-    background-color: #5b6eae;
+    padding: 0.5em;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 
 }

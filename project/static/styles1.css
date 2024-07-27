@@ -14,7 +14,6 @@ body {
     border-radius: 8px;
     width: 350px;
     text-align: center;
-
 }
 
 h2 {
@@ -39,7 +38,7 @@ form {
     width: 100%;
 }
 
- input {
+input {
     padding: 15px;
     width: 100%;
     font-size: 16px;
@@ -66,6 +65,17 @@ button {
     width: 100%;
 }
 
- button:hover {
+button:hover {
     background-color: #3879cf;
+}
+
+.signup {
+    color: #f3eded; /* Match this with the text color in your p element */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Ensure font size matches */
+    display: inline; /* Ensure it doesn't behave like a block element */
+}
+
+.signup:hover {
+    text-decoration: none; /* Ensure no underline on hover */
 }

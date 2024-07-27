@@ -15,7 +15,8 @@
         <div class="server-list">
             {% for server in servers %}
                 <div class="server-item">
-                    <span>{{ server.name }}</span>
+                    <span class="server-name">{{ server.name }}</span>
+                    <p class="server-description">{{ server.description }}</p>
                     <a href="{% url 'join_server' server.id %}" class="join-button">Join</a>
                 </div>
             {% endfor %}

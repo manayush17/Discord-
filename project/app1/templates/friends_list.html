@@ -15,14 +15,13 @@
         </nav>
     </header>
     <div class="container">
-        <h2>Friends List</h2>
-        <ul>
+        <ul class="friends-list">
             {% for friend in friends %}
                 <li>{{ friend.username }}</li>
             {% endfor %}
         </ul>
         {% if not friends %}
-            <p>You have no friends added yet.</p>
+            <p class="no-friends">You have no friends added yet.</p>
         {% endif %}
     </div>
 </body>

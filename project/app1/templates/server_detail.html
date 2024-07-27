@@ -12,7 +12,7 @@
         <h1>{{ server.name }}</h1>
     </header>
     <div class="container">
-        <div class="sidebar">
+        <aside class="sidebar">
             <h2>Text Channels</h2>
             <ul class="channels">
                 {% for channel in text_channels %}
@@ -37,36 +37,38 @@
                     <option value="text">Text Channel</option>
                     <option value="video">Video Channel</option>
                 </select>
-                <button type="submit">Create Channel</button>
+                <button type="submit" class="action-btn">Create Channel</button>
             </form>
             {% endif %}
-        </div>
-        <div class="main">
+        </aside>
+        <main class="main-content">
             <h2>Server Description</h2>
             <p>{{ server.description }}</p>
             <form class="invite-form" method="post" action="{% url 'create_invitation' server.id %}">
                 {% csrf_token %}
-                <button type="submit">Generate Invite Link</button>
+                <button type="submit" class="action-btn">Generate Invite Link</button>
             </form>
             {% if invite_link %}
-            <p>Invite Link: <a href="{{ invite_link }}">{{ invite_link }}</a></p>
+            <p>Invite Link: <a href="{{ invite_link }}" class="link">{{ invite_link }}</a></p>
             {% endif %}
 
             <h2>Owner</h2>
             <p>{{ owner.username }}</p>
 
             <h2>Moderators</h2>
-            <ul>
+            <ul class="member-list">
                 {% for membership in moderators %}
+                {% if membership.user != server.owner %}
                 <li>
                     {{ membership.user.username }}
                     {% if request.user == server.owner %}
-                    <form method="post" action="{% url 'demote_to_member' server.id membership.user.id %}">
+                    <form method="post" action="{% url 'demote_to_member' server.id membership.user.id %}" class="inline-form">
                         {% csrf_token %}
-                        <button type="submit">Demote to Member</button>
+                        <button type="submit" class="action-btn">Demote to Member</button>
                     </form>
                     {% endif %}
                 </li>
+                {% endif %}
                 {% empty %}
                 <li>No moderators yet.</li>
                 {% endfor %}
@@ -74,27 +76,29 @@
 
             {% if request.user == server.owner %}
             <h2>All Members</h2>
-            <ul>
+            <ul class="member-list">
                 {% for membership in memberships %}
+                {% if membership.user != server.owner and membership.user not in moderators %}
                 <li>
                     {{ membership.user.username }} ({{ membership.role }})
                     {% if membership.role == 'member' %}
-                    <form method="post" action="{% url 'promote_to_moderator' server.id membership.user.id %}">
+                    <form method="post" action="{% url 'promote_to_moderator' server.id membership.user.id %}" class="inline-form">
                         {% csrf_token %}
-                        <button type="submit">Promote to Moderator</button>
+                        <button type="submit" class="action-btn">Promote to Moderator</button>
                     </form>
                     {% endif %}
-                    {% if request.user == server.owner or membership.role == 'member' %}
-                    <form method="post" action="{% url 'remove_member' server.id membership.user.id %}">
+                    {% if request.user == server.owner %}
+                    <form method="post" action="{% url 'remove_member' server.id membership.user.id %}" class="inline-form">
                         {% csrf_token %}
-                        <button type="submit">Remove Member</button>
+                        <button type="submit" class="action-btn">Remove Member</button>
                     </form>
                     {% endif %}
                 </li>
+                {% endif %}
                 {% endfor %}
             </ul>
             {% endif %}
-        </div>
+        </main>
     </div>
 </body>
 </html>

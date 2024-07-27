@@ -9,12 +9,6 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Discord Clone</h1>
-        <nav>
-            <a class="redir" href="{% url 'logout' %}">Logout</a>
-            <a class="redir" href="{% url 'create_server' %}">Create Server</a>
-            <a class="redir" href="{% url 'list_servers' %}">Join Server</a>
-        </nav>
     </header>
     <div class="container">
         <aside class="sidebar">
@@ -37,18 +31,27 @@
                     <li><a href="{% url 'join_server' server.id %}" class="enter">{{ server.name }}</a></li>
                 {% endfor %}
             </ul>
+            <h2>Actions</h2>
+            <ul>
+                <li><a href="{% url 'create_server' %}" class="action-btn">Create Server</a></li>
+                <li><a href="{% url 'list_servers' %}" class="action-btn">Join Server</a></li>
+                <li><a href="{% url 'logout' %}" class="action-btn">Logout</a></li>
+            </ul>
         </aside>
         <div class="main-content">
-            <div class="friends">
+            <h2>ADD FRIENDS</h2>
+            <p>YOU CAN ADD FRIEND WITH YOUR USERNAME</p>
+            <div class="friends-nav">
                 <nav>
-                    <a href="{% url 'home' %}">Add Friends</a>
+                    <a href="{% url 'home' %}">Friends</a>
+                    <a href="#">Online</a>
                     <a href="{% url 'friends_list' %}">All</a>
                     <a href="{% url 'pending_requests' %}">Pending</a>
-                    
+                    <a href="#">Blocked</a>
+                    <a href="{% url 'home' %}" class="add-friend">Add Friend</a>
                 </nav>
             </div>
             <main class="chat">
-                <h2>Chat Area</h2>
                 <div class="search-form">
                     <form method="post" action="{% url 'home' %}">
                         {% csrf_token %}
@@ -68,8 +71,9 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="messages">
-                    <!-- Messages will be displayed here -->
+                <div class="background-image"></div>
+                <div class="wumpus-message">
+                    <p>Wumpus is waiting on friends. You don't have to though!</p>
                 </div>
             </main>
         </div>

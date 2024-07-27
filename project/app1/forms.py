@@ -5,10 +5,8 @@ import re
 from django import forms
 from .models import Server ,Channel
 from .models import FriendRequest
-
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Set Password'}))
-
     class Meta:
         model = User
         fields = ['email', 'username', 'password',]
@@ -37,8 +35,6 @@ class RegistrationForm(forms.ModelForm):
         if not re.search(r"[@$!%*?&]", password):
             raise ValidationError('Password must contain at least one special character.')
         return password
-
-
 class ServerForm(forms.ModelForm):
     class Meta:
         model = Server
@@ -49,7 +45,6 @@ class ServerForm(forms.ModelForm):
         if Server.objects.filter(name=name).exists():
             raise forms.ValidationError("A server with this name already exists.")
         return name
-
 class ChannelForm(forms.ModelForm):
     class Meta:
         model = Channel
@@ -59,6 +54,5 @@ class FriendRequestForm(forms.ModelForm):
     class Meta:
         model = FriendRequest
         fields = []  
-
 class SearchForm(forms.Form):
     username = forms.CharField(max_length=150, required=True, label='Search for a user')

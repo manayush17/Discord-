@@ -1,32 +1,38 @@
+/* Reset CSS */
+body, h1, h2, ul, li, p, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #2c2f33;
     color: #fff;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Prevent page scrolling */
 }
 
 header {
-    background-color: #242f36;
-    padding: 1em;
+    background-color: #23272a;
+    padding: 0.5em; /* Reduced padding for a smaller header */
     text-align: center;
 }
 
-header h1 {
-    margin: 0;
+header nav {
+    font-size: 0.9em; /* Smaller font size */
 }
 
-nav {
-    margin-top: 1em;
-}
-
-nav a {
+header nav a {
     color: #7289da;
-    margin: 0 1em;
+    margin: 0 0.5em; /* Reduced margin */
     text-decoration: none;
+    padding: 0.5em; /* Reduced padding */
 }
 
-nav a:hover {
+header nav a:hover {
     text-decoration: underline;
 }
 
@@ -38,7 +44,7 @@ nav a:hover {
 .sidebar {
     background-color: #2f3136;
     padding: 1em;
-    width: 20%;
+    width: 15%; /* Adjust width if necessary */
     box-sizing: border-box;
 }
 
@@ -65,108 +71,127 @@ nav a:hover {
     text-decoration: underline;
 }
 
+.action-btn {
+    color: #7289da;
+    background-color: transparent; /* No background color */
+    border: none; /* No border */
+    padding: 0; /* No padding */
+    text-decoration: none; /* No underline */
+    font-size: 1em; /* Text size */
+    cursor: pointer; /* Pointer cursor */
+    display: inline; /* Inline display */
+}
+
+.action-btn:hover {
+    color: #1e90ff; /* Change text color on hover */
+}
+
 .main-content {
     flex: 1;
     padding: 1em;
     box-sizing: border-box;
+    overflow: hidden; /* Prevent internal scrolling */
 }
 
-.friends {
+.friends-nav {
+    background-color: #2f3136;
+    padding: 0.5em; /* Reduced padding */
     margin-bottom: 2em;
 }
 
-.friends nav {
+.friends-nav nav {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 1em;
+    justify-content: flex-start; /* Align items to the left */
+    gap: 1em; /* Space between links */
 }
 
-.friends nav a {
+.friends-nav nav a {
     color: #7289da;
     text-decoration: none;
+    padding: 0; /* No padding */
+    font-size: 1em; /* Text size */
 }
 
-.friends nav a:hover {
-    text-decoration: underline;
+.friends-nav nav a.add-friend {
+    color: #43b581; /* Green color for Add Friend link */
+}
+
+.friends-nav nav a:hover {
+    color: #1e90ff; /* Change text color on hover */
 }
 
 .search-form {
     margin-bottom: 1em;
+    width: 100%;
 }
 
 .search-form form {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .search-form input[type="text"] {
     flex: 1;
-    padding: 0.5em;
+    padding: 1em;
     margin-right: 0.5em;
-    border: none;
+    border: 2px solid #7289da;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: #2f3136;
+    color: #fff;
 }
 
 .search-form button {
-    padding: 0.5em 1em;
+    padding: 1em 2em;
     border: none;
-    background-color: #7289da;
+    background-color: #1e90ff; /* Dark blue color for the button */
     color: white;
     cursor: pointer;
     border-radius: 4px;
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 .search-form button:hover {
-    background-color: #5b6eae;
+    background-color: #1c7ed6; /* Slightly darker blue for hover */
 }
 
 .search-results {
     margin-top: 1em;
-    background-color: #2f3136;
+    background-color: rgba(47, 49, 54, 0.9); /* Semi-transparent background */
     padding: 1em;
     border-radius: 4px;
 }
 
-.search-results h3 {
-    margin-top: 0;
-}
-
-.search-results ul {
-    list-style: none;
-    padding: 0;
-}
-
-.search-results ul li {
+.user-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 0.5em;
 }
 
-.search-results ul li a {
-    color: #7289da;
-    text-decoration: none;
+.user-result p {
+    margin: 0;
 }
 
-.search-results ul li a:hover {
-    text-decoration: underline;
+.add-friend-btn {
+    color: #7289da; /* Blue color for the link */
+    text-decoration: none; /* No underline */
+    font-size: 1em; /* Text size */
+    transition: color 0.3s; /* Smooth transition for hover effect */
+}
+
+.add-friend-btn:hover {
+    color: #5a6eae; /* Darker shade on hover */
+}
+
+.already-friends {
+    color: #b9bbbe;
 }
 
 .chat {
-    background-color: #36393f;
-    padding: 1em;
-    border-radius: 4px;
-    box-sizing: border-box;
-    height: 60vh;
-    overflow-y: auto;
-}
-
-.chat h2 {
-    margin-top: 0;
-}
-
-.messages {
-    background-color: #2f3136;
-    padding: 1em;
-    border-radius: 4px;
-    height: calc(100% - 40px);
-    overflow-y: auto;
+    background-color: rgba(54, 57, 63, 0.9);
 }
