@@ -1,1 +1,204 @@
-<h1>this will launch soon stay tuned with us</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Channel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c2f33;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 80%;
+            padding: 10px;
+        }
+        .video-box {
+            background-color: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 10%;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #7289da;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a6fb2;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <div id="local-video" class="video-box"></div>
+    </div>
+    <div id="controls">
+        <button id="mute-audio">Mute Audio</button>
+        <button id="mute-video">Mute Video</button>
+        <button id="return-home">Return Home</button>
+    </div>
+
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.21.0.js"></script>
+    <script>
+        const APP_ID = "{{ agora_app_id }}";
+        const agoraToken = "{{ agora_token }}" || null;
+        const TOKEN = "{{ agora_token }}";
+        const CHANNEL = "{{ channel.name }}";
+        const UID = "{{ user_id }}";
+
+        const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        let localTracks = {
+            videoTrack: null,
+            audioTrack: null
+        };
+        let remoteUsers = {};
+
+        async function joinChannel() {
+            try {
+                await client.join(APP_ID, CHANNEL, TOKEN, UID);
+                console.log("User " + UID + " joined channel successfully");
+
+                localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+                localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
+
+                const localVideoElement = document.createElement('video');
+                localVideoElement.id = "local-video-element";
+                localVideoElement.autoplay = true;
+                localVideoElement.muted = true;
+                document.getElementById("local-video").append(localVideoElement);
+                localTracks.videoTrack.play(localVideoElement);
+
+                await client.publish(Object.values(localTracks));
+                console.log("Publish success");
+
+                client.on("user-published", handleUserPublished);
+                client.on("user-unpublished", handleUserUnpublished);
+            } catch (error) {
+                console.error("Join channel failed", error);
+            }
+        }
+        function handleUserPublished(user, mediaType) {
+            const id = user.uid;
+            console.log(`User published: ${id}`);
+            remoteUsers[id] = user;
+            subscribe(user, mediaType);
+        }
+        async function subscribe(user, mediaType) {
+            const id = user.uid;
+            await client.subscribe(user, mediaType);
+            console.log(`Subscribe success: ${id}`);
+
+            let remotePlayerContainer = document.getElementById(id);
+            if (!remotePlayerContainer) {
+                remotePlayerContainer = document.createElement("div");
+                remotePlayerContainer.id = id;
+                remotePlayerContainer.className = "video-box";
+                document.getElementById("video-container").append(remotePlayerContainer);
+            }
+
+            let remoteVideoElement = document.getElementById(`remote-video-element-${id}`);
+            if (!remoteVideoElement) {
+                remoteVideoElement = document.createElement('video');
+                remoteVideoElement.id = `remote-video-element-${id}`;
+                remoteVideoElement.autoplay = true;
+                remotePlayerContainer.append(remoteVideoElement);
+            }
+
+            if (mediaType === "video") {
+                user.videoTrack.play(remoteVideoElement);
+                console.log(`Playing video for user: ${id}`);
+            }
+
+            if (mediaType === "audio") {
+                user.audioTrack.play();
+                console.log(`Playing audio for user: ${id}`);
+            }
+        }
+
+        function handleUserUnpublished(user) {
+            const id = user.uid;
+            delete remoteUsers[id];
+            const remotePlayerContainer = document.getElementById(id);
+            if (remotePlayerContainer) {
+                remotePlayerContainer.remove();
+                console.log(`Removed video element for user: ${id}`);
+            }
+        }
+
+        document.getElementById('mute-audio').onclick = function() {
+            if (localTracks.audioTrack) {
+                if (localTracks.audioTrack.muted) {
+                    localTracks.audioTrack.setMuted(false);
+                    this.innerText = 'Mute Audio';
+                } else {
+                    localTracks.audioTrack.setMuted(true);
+                    this.innerText = 'Unmute Audio';
+                }
+            } else {
+                console.error('Audio track is not initialized');
+            }
+        };
+
+        document.getElementById("mute-video").onclick = function() {
+            if (localTracks.videoTrack) {
+                if (localTracks.videoTrack.muted) {
+                    localTracks.videoTrack.setMuted(false);
+                    this.innerText = "Mute Video";
+                } else {
+                    localTracks.videoTrack.setMuted(true);
+                    this.innerText = "Unmute Video";
+                }
+            }
+        };
+
+        document.getElementById("return-home").onclick = async function() {
+            try {
+                await client.leave();
+                if (localTracks.videoTrack) {
+                    localTracks.videoTrack.stop();
+                    localTracks.videoTrack.close();
+                }
+                if (localTracks.audioTrack) {
+                    localTracks.audioTrack.stop();
+                    localTracks.audioTrack.close();
+                }
+                window.location.href = "/"; 
+            } catch (error) {
+                console.error("Error leaving the channel", error);
+            }
+        };
+
+        joinChannel();
+    </script>
+</body>
+</html>

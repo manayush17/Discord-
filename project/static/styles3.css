@@ -21,14 +21,14 @@ header h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 80px); /* Adjust height for header */
-    padding: 1em; /* Add some padding around the container */
+    height: calc(100vh - 80px);
+    padding: 1em; 
 }
 
 .server-list {
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 columns */
-    gap: 1em; /* Space between boxes */
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 1em;
     width: 80%;
 }
 
@@ -42,15 +42,15 @@ header h1 {
     justify-content: space-between;
     align-items: center;
     position: relative;
-    aspect-ratio: 1; /* Ensures the box is square */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    aspect-ratio: 1; 
+    box-sizing: border-box; 
     border: 2px solid aqua
 }
 
 .server-item span {
     font-size: 1.1em;
-    margin-bottom: 0.5em; /* Space between text and button */
-    text-align: center; /* Center-align text */
+    margin-bottom: 0.5em; 
+    text-align: center; 
 }
 
 .join-button {
@@ -60,14 +60,14 @@ header h1 {
     border: none;
     border-radius: 4px;
     color: white;
-    text-decoration: none; /* Remove underline */
+    text-decoration: none; 
     cursor: pointer;
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    transition: background-color 0.3s; 
     font-size: 1em;
     text-align: center;
-    margin-top: auto; /* Push button to the bottom */
+    margin-top: auto; 
 }
 
 .join-button:hover {
-    background-color: #5a6eae; /* Darker shade on hover */
+    background-color: #5a6eae; 
 }

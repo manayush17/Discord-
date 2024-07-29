@@ -8,25 +8,37 @@
 </head>
 <body>
     <div class="chat-page-container">
-        <header>
-            <h1>Welcome to {{ channel.name }}, {{ request.user }}</h1>
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'home' %}" class="home-link">Go to Home Page</a>
-            {% endif %}
-        </header>
+        <aside class="sidebar">
+            <h2>{{ channel.name }}</h2>
+            <ul>
+                {% for channel in server.channels.all %}
+                    <li><a href="{% url 'channel_detail' server.id channel.id %}">{{ channel.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </aside>
         <main>
+            <header>
+                <h1>Welcome to {{ channel.name }}, {{ request.user }}</h1>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'home' %}" class="home-link">Go to Home Page</a>
+                {% endif %}
+            </header>
             <div class="chat__item__container" id="id_chat_item_container">
                 <div id="id_chat_log">
                     {% for message in messages %}
-                    <div class="chat-message">{{ message.user.username }} : {{ message.content }}</div>
+                    <div class="chat-message {% if message.user == request.user %}user-message{% else %}other-message{% endif %}">
+                        {{ message.user.username }} : {{ message.content }}
+                    </div>
                     {% endfor %}
                     {% for file in file_uploads %}
-                    <div class="chat-message">{{ file.user.username }} : <a href="{{ file.file.url }}" download>{{ file.file.name }}</a></div>
+                    <div class="chat-message {% if file.user == request.user %}user-message{% else %}other-message{% endif %}">
+                        {{ file.user.username }} : <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="input-container">
                     <input type="text" id="id_message_send_input" placeholder="Type a message..." />
-                    <button type="submit" id="id_message_send_button">Send Message</button>
+                    <button type="submit" id="id_message_send_button">Send</button>
                 </div>
                 <div class="input-container">
                     <input type="file" id="id_file_send_input" />
@@ -57,7 +69,7 @@
             var fileInput = document.querySelector("#id_file_send_input").files[0];
             var formData = new FormData();
             formData.append("file", fileInput);
-            formData.append("channel_id", "{{ channel.id }}");  
+            formData.append("channel_id", "{{ channel.id }}");
             fetch("{% url 'upload_file' %}", {
                 method: "POST",
                 body: formData,
@@ -71,6 +83,7 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             var div = document.createElement("div");
+            div.className = data.username === "{{ request.user.username }}" ? "chat-message user-message" : "chat-message other-message";
             div.innerHTML = data.username + " : " + (data.message || data.file_name);
             document.querySelector("#id_message_send_input").value = "";
             document.querySelector("#id_chat_log").appendChild(div);

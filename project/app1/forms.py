@@ -5,6 +5,7 @@ import re
 from django import forms
 from .models import Server ,Channel
 from .models import FriendRequest
+
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Set Password'}))
     class Meta:

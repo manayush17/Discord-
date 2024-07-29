@@ -1,4 +1,4 @@
-# models.py
+
 from django.db import models
 from django.contrib.auth.models import User
 import random
@@ -28,17 +28,22 @@ class Membership(models.Model):
 
 class Channel(models.Model):
     TEXT = 'text'
+    AUDIO = 'audio'
     VIDEO = 'video'
     CHANNEL_TYPES = [
         (TEXT, 'Text'),
+        (AUDIO, 'Audio'),
         (VIDEO, 'Video'),
     ]
     
-    name = models.CharField(max_length=255)
-    channel_type = models.CharField(max_length=10, choices=CHANNEL_TYPES, default=TEXT)
+    name = models.CharField(max_length=100)
     server = models.ForeignKey(Server, related_name='channels', on_delete=models.CASCADE)
+    channel_type = models.CharField(max_length=10, choices=CHANNEL_TYPES, default=TEXT)
     users = models.ManyToManyField(User, blank=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.get_channel_type_display()})"
+    
 class FriendRequest(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),

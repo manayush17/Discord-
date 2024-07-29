@@ -70,12 +70,12 @@ button:hover {
 }
 
 .signup {
-    color: #f3eded; /* Match this with the text color in your p element */
-    text-decoration: none; /* Remove underline */
-    font-size: 16px; /* Ensure font size matches */
-    display: inline; /* Ensure it doesn't behave like a block element */
+    color: #f3eded; 
+    text-decoration: none; 
+    font-size: 16px; 
+    display: inline; 
 }
 
 .signup:hover {
-    text-decoration: none; /* Ensure no underline on hover */
+    text-decoration: none; 
 }

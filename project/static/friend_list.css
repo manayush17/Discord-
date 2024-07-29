@@ -1,11 +1,10 @@
-/* Reset CSS */
+
 body, h1, ul, li, p, a {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;

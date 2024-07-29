@@ -21,6 +21,16 @@
                 <li>No text channels available.</li>
                 {% endfor %}
             </ul>
+
+            <h2>Voice Channels</h2>
+            <ul class="channels">
+                {% for channel in audio_channels %}
+                <li><a href="{% url 'channel_detail' server.id channel.id %}">{{ channel.name }}</a></li>
+                {% empty %}
+                <li>No voice channels available.</li>
+                {% endfor %}
+            </ul>
+
             <h2>Video Channels</h2>
             <ul class="channels">
                 {% for channel in video_channels %}
@@ -35,6 +45,7 @@
                 <input type="text" name="name" placeholder="Enter channel name" required>
                 <select name="channel_type" required>
                     <option value="text">Text Channel</option>
+                    <option value="audio">Audio Channel</option>
                     <option value="video">Video Channel</option>
                 </select>
                 <button type="submit" class="action-btn">Create Channel</button>

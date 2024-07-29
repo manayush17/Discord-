@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{channel}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #2c2f33;
+            color: #fff;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #user-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        .user-box {
+            background-color: #7289da;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            background-color: #7289da;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a6fb2;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{channel}}</h1>
+    <div id="user-container"></div>
+    <button id="mute-audio">Mute Audio</button>
+    <button id="return-home">Return Home</button>
+
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.21.0.js"></script>
+    <script>
+        const APP_ID = "{{ agora_app_id }}";
+        const TOKEN = "{{ agora_token }}";
+        const CHANNEL = "{{ channel.name }}";
+        const UID = "{{ user_id }}";
+
+        const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+        let localAudioTrack = null;
+
+        async function startVoiceCall() {
+            try {
+                await client.join(APP_ID, CHANNEL, TOKEN, UID);
+                console.log('Joined channel successfully');
+                localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+                await client.publish(localAudioTrack);
+                console.log('Local audio track published');
+
+                addUserBox(UID, "Me");
+                client.on('user-published', async (user, mediaType) => {
+                    await client.subscribe(user, mediaType);
+                    if (mediaType === 'audio') {
+                        user.audioTrack.play();
+                        console.log('Remote audio track published');
+                        addUserBox(user.uid, `User ${user.uid}`);
+                    }
+                });
+
+                client.on('user-unpublished', (user) => {
+                    console.log('Remote user unpublished');
+                    removeUserBox(user.uid);
+                });
+
+            } catch (err) {
+                console.error('Error joining channel:', err);
+            }
+        }
+        function addUserBox(uid, name) {
+            const userContainer = document.getElementById('user-container');
+            const userBox = document.createElement('div');
+            userBox.id = `user-${uid}`;
+            userBox.className = 'user-box';
+            userBox.innerText = name;
+            userContainer.appendChild(userBox);
+        }
+
+        function removeUserBox(uid) {
+            const userBox = document.getElementById(`user-${uid}`);
+            if (userBox) {
+                userBox.remove();
+            }
+        }
+
+        document.getElementById('mute-audio').onclick = function() {
+            if (localAudioTrack) {
+                if (localAudioTrack.muted) {
+                    localAudioTrack.setMuted(false);
+                    this.innerText = 'Mute Audio';
+                } else {
+                    localAudioTrack.setMuted(true);
+                    this.innerText = 'Unmute Audio';
+                }
+            } else {
+                console.error('Audio track is not initialized');
+            }
+        };
+
+        document.getElementById('return-home').onclick = async function() {
+            try {
+                if (localAudioTrack) {
+                    localAudioTrack.stop();
+                    localAudioTrack.close();
+                }
+                await client.leave();
+                console.log('Left channel successfully');
+                window.location.href = "/"; 
+            } catch (err) {
+                console.error('Error leaving channel:', err);
+            }
+        };
+
+        startVoiceCall();
+    </script>
+</body>
+</html>

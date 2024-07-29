@@ -16,16 +16,16 @@ body {
 
 .server_container {
     background-color: #2f3136;
-    padding: 30px 40px; /* Increased padding for better spacing */
+    padding: 30px 40px; 
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     text-align: center;
-    border: 2px solid #00ffff; /* Aqua-colored border */
+    border: 2px solid #00ffff; 
 }
 
 h2 {
     margin-bottom: 20px;
-    font-size: 1.8em; /* Increased font size for headings */
+    font-size: 1.8em; 
 }
 
 .form {
@@ -33,39 +33,39 @@ h2 {
 }
 
 .form p {
-    margin-bottom: 15px; /* Increased margin for better spacing */
+    margin-bottom: 15px; 
     text-align: left;
-    font-size: 1.2em; /* Increased font size for better readability */
+    font-size: 1.2em; 
 }
 
 input[type="text"], input[type="password"], textarea, select {
     width: 100%;
-    padding: 12px; /* Increased padding for better input appearance */
+    padding: 12px; 
     margin-top: 8px;
     margin-bottom: 15px;
-    border: 2px solid #7289da; /* Border with theme color */
+    border: 2px solid #7289da;
     border-radius: 5px;
     background-color: #40444b;
     color: #dcddde;
-    font-size: 1.1em; /* Adjusted font size */
+    font-size: 1.1em; 
 }
 
 input[type="checkbox"] {
-    width: 25px; /* Increased checkbox size */
-    height: 25px; /* Increased checkbox size */
-    margin-right: 10px; /* Spacing between checkbox and label */
-    vertical-align: middle; /* Align checkbox with text */
+    width: 25px; 
+    height: 25px; 
+    margin-right: 10px; 
+    vertical-align: middle; 
 }
 
 button {
     background-color: #7289da; 
     color: #fff;
-    padding: 12px 20px; /* Adjusted padding for better button appearance */
+    padding: 12px 20px; 
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 1.1em; /* Increased font size for button text */
+    font-size: 1.1em; 
 }
 
 button:hover {
@@ -73,6 +73,6 @@ button:hover {
 }
 
 label {
-    font-size: 1.2em; /* Increase font size for labels */
-    margin-bottom: 10px; /* Spacing between label and input */
+    font-size: 1.2em; 
+    margin-bottom: 10px; 
 }

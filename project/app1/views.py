@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -10,6 +10,9 @@ from django.views.decorators.cache import never_cache
 from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation ,FileUpload,Message
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import time
+from agora_token_builder import RtcTokenBuilder
+
 
 @never_cache
 def SignupPage(request):
@@ -233,15 +236,21 @@ def server_detail(request, server_id):
                 channel = channel_form.save(commit=False)
                 channel.server = server
                 channel.save()
+                print(f"Channel created: {channel.name} - {channel.channel_type}")
                 return redirect('server_detail', server_id=server.id)
+            else:
+                print(f"Form errors: {channel_form.errors}")
     else:
         channel_form = ChannelForm()
+    
     text_channels = server.channels.filter(channel_type=Channel.TEXT)
+    audio_channels = server.channels.filter(channel_type=Channel.AUDIO)
     video_channels = server.channels.filter(channel_type=Channel.VIDEO)
 
     return render(request, 'server_detail.html', {
         'server': server,
         'text_channels': text_channels,
+        'audio_channels': audio_channels,
         'video_channels': video_channels,
         'memberships': memberships,
         'owner': server.owner,
@@ -249,10 +258,33 @@ def server_detail(request, server_id):
         'channel_form': channel_form,
     })
 
+@csrf_exempt
+def upload_file(request):
+    if request.method == "POST":
+        file = request.FILES['file']
+        file_instance = FileUpload.objects.create(user=request.user, channel_id=request.POST['channel_id'], file=file)
+        return JsonResponse({"file_name": file_instance.file.name})
+    
+def sanitize_channel_name(channel_name):
+    valid_channel_name = ''.join(c for c in channel_name if c.isalnum() or c in ' !#$%&()*+,-.:;<=>?@[]^_{|}~')
+    return valid_channel_name[:64]
+
+def generate_agora_token(channel_name, user_id, role):
+    app_id = settings.AGORA_APP_ID
+    app_certificate = settings.AGORA_APP_CERTIFICATE
+    expiration_time_in_seconds = 3600 * 24 
+    current_timestamp = int(time.time())
+    privilege_expired_ts = current_timestamp + expiration_time_in_seconds
+    sanitized_channel_name = sanitize_channel_name(channel_name)
+    token = RtcTokenBuilder.buildTokenWithUid(
+        app_id, app_certificate, sanitized_channel_name, user_id, role, privilege_expired_ts)
+    return token
+
 @login_required
 def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
     channel = get_object_or_404(Channel, id=channel_id)
+    channels = server.channels.all()
 
     if channel.channel_type == 'text':
         messages = Message.objects.filter(channel=channel).order_by('timestamp')
@@ -260,21 +292,36 @@ def channel_detail(request, server_id, channel_id):
         context = {
             'server': server,
             'channel': channel,
+            'channels': channels,
             'messages': messages,
             'file_uploads': file_uploads,
         }
         return render(request, "channel_detail.html", context)
-    elif channel.channel_type == 'video':
+    
+    elif channel.channel_type == 'audio':
+        user_id = request.user.username
+        agora_token = generate_agora_token(channel.name, user_id, 1)
+
         context = {
             'server': server,
             'channel': channel,
+            'channels': channels,
+            'agora_token': agora_token,
+            'agora_app_id': settings.AGORA_APP_ID,
+            'user_id': user_id,
+        }
+        return render(request, "voice_channel.html", context)
+    
+    elif channel.channel_type == 'video':
+        user_id = request.user.username
+        agora_token = generate_agora_token(channel.name, user_id, 1)
+
+        context = {
+            'server': server,
+            'channel': channel,
+            'channels': channels,
+            'agora_token': agora_token,
+            'agora_app_id': settings.AGORA_APP_ID,
+            'user_id': user_id,
         }
         return render(request, "videochannel_detail.html", context)
-
-
-@csrf_exempt
-def upload_file(request):
-    if request.method == "POST":
-        file = request.FILES['file']
-        file_instance = FileUpload.objects.create(user=request.user, channel_id=request.POST['channel_id'], file=file)
-        return JsonResponse({"file_name": file_instance.file.name})

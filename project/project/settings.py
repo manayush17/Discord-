@@ -139,3 +139,6 @@ LOGIN_URL = '/login/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AGORA_APP_ID = '787fd699e35049f9b0576e76589b1fc3'
+AGORA_APP_CERTIFICATE = '9a948d7a72bd49b8829c4fee18c8401f'
