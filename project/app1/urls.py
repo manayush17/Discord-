@@ -24,5 +24,8 @@ urlpatterns = [
     path('servers/<int:server_id>/promote/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
     path('servers/<int:server_id>/demote/<int:user_id>/', views.demote_to_member, name='demote_to_member'),
     path('servers/<int:server_id>/remove/<int:user_id>/', views.remove_member, name='remove_member'),
+    path('server/<int:server_id>/channel/<int:channel_id>/grant/<int:user_id>/', views.grant_channel_access, name='grant_channel_access'),
+    path('server/<int:server_id>/channel/<int:channel_id>/restrict/<int:user_id>/', views.restrict_channel_access, name='restrict_channel_access'),
     path('upload_file/', views.upload_file, name='upload_file'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

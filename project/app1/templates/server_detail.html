@@ -39,7 +39,7 @@
                 <li>No video channels available.</li>
                 {% endfor %}
             </ul>
-            {% if request.user == server.owner or is_moderator %}
+            {% if is_owner or is_moderator %}
             <form class="create-channel-form" method="post">
                 {% csrf_token %}
                 <input type="text" name="name" placeholder="Enter channel name" required>
@@ -72,7 +72,7 @@
                 {% if membership.user != server.owner %}
                 <li>
                     {{ membership.user.username }}
-                    {% if request.user == server.owner %}
+                    {% if is_owner %}
                     <form method="post" action="{% url 'demote_to_member' server.id membership.user.id %}" class="inline-form">
                         {% csrf_token %}
                         <button type="submit" class="action-btn">Demote to Member</button>
@@ -85,7 +85,7 @@
                 {% endfor %}
             </ul>
 
-            {% if request.user == server.owner %}
+            {% if is_owner %}
             <h2>All Members</h2>
             <ul class="member-list">
                 {% for membership in memberships %}
@@ -98,7 +98,7 @@
                         <button type="submit" class="action-btn">Promote to Moderator</button>
                     </form>
                     {% endif %}
-                    {% if request.user == server.owner %}
+                    {% if is_owner %}
                     <form method="post" action="{% url 'remove_member' server.id membership.user.id %}" class="inline-form">
                         {% csrf_token %}
                         <button type="submit" class="action-btn">Remove Member</button>
@@ -108,6 +108,25 @@
                 {% endif %}
                 {% endfor %}
             </ul>
+            {% endif %}
+
+            {% if is_owner or is_moderator %}
+            <h2>Manage Channel Permissions</h2>
+            {% for channel in server.channels.all %}
+                <h3>{{ channel.name }} ({{ channel.get_channel_type_display }})</h3>
+                <ul>
+                    {% for member in server.memberships.all %}
+                        <li>
+                            {{ member.user.username }}
+                            {% if member.user in channel.allowed_users.all %}
+                                <a href="{% url 'restrict_channel_access' server_id=server.id channel_id=channel.id user_id=member.user.id %}" class="restrict-access">Restrict Access</a>
+                            {% else %}
+                                <a href="{% url 'grant_channel_access' server_id=server.id channel_id=channel.id user_id=member.user.id %}" class="grant-access">Grant Access</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
             {% endif %}
         </main>
     </div>

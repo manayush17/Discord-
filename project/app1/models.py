@@ -40,6 +40,8 @@ class Channel(models.Model):
     server = models.ForeignKey(Server, related_name='channels', on_delete=models.CASCADE)
     channel_type = models.CharField(max_length=10, choices=CHANNEL_TYPES, default=TEXT)
     users = models.ManyToManyField(User, blank=True)
+    allowed_users = models.ManyToManyField(User, related_name='allowed_channels', blank=True)
+
 
     def __str__(self):
         return f"{self.name} ({self.get_channel_type_display()})"

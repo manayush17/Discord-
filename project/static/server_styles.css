@@ -1,11 +1,13 @@
+
 body {
     font-family: Arial, sans-serif;
     background-color: #2c2f33;
     color: #fff;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: hidden; 
 }
+
 
 header {
     background-color: #23272a;
@@ -21,9 +23,11 @@ header h1 {
 
 .container {
     display: flex;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 60px); 
     border-top: 2px solid #1e90ff;
+    overflow: hidden; 
 }
+
 
 .sidebar {
     background-color: #2f3136;
@@ -32,6 +36,7 @@ header h1 {
     box-sizing: border-box;
     border-right: 2px solid #1e90ff;
     height: 100%;
+    overflow-y: auto; 
 }
 
 .sidebar h2 {
@@ -40,6 +45,7 @@ header h1 {
     border-bottom: 2px solid #1e90ff;
     padding-bottom: 0.5em;
 }
+
 
 .channels, .servers, .actions {
     list-style: none;
@@ -50,11 +56,128 @@ header h1 {
     margin-bottom: 1em;
 }
 
+
 .channels li a, .servers li a, .actions li a {
     color: #7289da;
     text-decoration: none;
     padding: 0.5em;
     display: block;
     border-radius: 4px;
-    transition: background-color 
+    transition: background-color 0.3s ease; 
+}
+
+
+.channels li a:hover, .servers li a:hover, .actions li a:hover {
+    background-color: #40444b;
+}
+
+.main-content {
+    flex: 1;
+    padding: 1em;
+    overflow-y: auto; 
+}
+
+
+.action-btn {
+    background-color: #1e90ff;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #1c86ee;
+}
+
+.manage-permission-btn {
+    background-color: #ff4757;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+    text-align: center;
+    display: inline-block;
+    margin: 0.5em; 
+    text-decoration: none; 
+}
+
+.grant-btn {
+    background-color: #1e90ff; 
+}
+
+.restrict-btn {
+    background-color: #ff4757; 
+}
+
+.manage-permission-btn:hover {
+    background-color: #e84118;
+}
+
+.grant-btn:hover {
+    background-color: #1c86ee;
+}
+
+
+.create-channel-form input,
+.create-channel-form select,
+.invite-form button {
+    margin-bottom: 1em;
+    width: calc(100% - 2em);
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.create-channel-form button {
+    width: 100%;
+}
+
+.member-list {
+    list-style: none;
+    padding: 0;
+}
+
+.member-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5em;
+}
+
+.inline-form {
+    display: inline;
+}
+
+a.grant-access, a.restrict-access {
+    background-color: #1e90ff;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+    text-align: center;
+    display: inline-block;
+    margin: 0.5em;
+    text-decoration: none;
+}
+
+a.restrict-access {
+    background-color: #ff4757;
+}
+
+a.grant-access:hover {
+    background-color: #1c86ee; 
+}
+
+a.restrict-access:hover {
+    background-color: #e84118; 
 }

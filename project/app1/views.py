@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from .models import Server, Membership, Channel, FriendRequest, Friendship ,Invitation ,FileUpload,Message
-from django.http import JsonResponse
+from django.http import JsonResponse , HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 import time
 from agora_token_builder import RtcTokenBuilder
@@ -228,14 +228,17 @@ def server_detail(request, server_id):
     server = get_object_or_404(Server, id=server_id)
     memberships = server.memberships.all()
     is_moderator = Membership.objects.filter(user=request.user, server=server, role='moderator').exists()
+    is_owner = request.user == server.owner
 
     if request.method == 'POST' and 'name' in request.POST:
-        if request.user == server.owner or is_moderator:
+        if is_owner or is_moderator:
             channel_form = ChannelForm(request.POST)
             if channel_form.is_valid():
                 channel = channel_form.save(commit=False)
                 channel.server = server
                 channel.save()
+                # Add all existing members to the new channel
+                channel.allowed_users.add(*memberships.values_list('user', flat=True))
                 print(f"Channel created: {channel.name} - {channel.channel_type}")
                 return redirect('server_detail', server_id=server.id)
             else:
@@ -247,7 +250,7 @@ def server_detail(request, server_id):
     audio_channels = server.channels.filter(channel_type=Channel.AUDIO)
     video_channels = server.channels.filter(channel_type=Channel.VIDEO)
 
-    return render(request, 'server_detail.html', {
+    context = {
         'server': server,
         'text_channels': text_channels,
         'audio_channels': audio_channels,
@@ -255,8 +258,14 @@ def server_detail(request, server_id):
         'memberships': memberships,
         'owner': server.owner,
         'moderators': memberships.filter(role='moderator'),
+        'is_owner': is_owner,
+        'is_moderator': is_moderator,
         'channel_form': channel_form,
-    })
+    }
+
+    return render(request, 'server_detail.html', context)
+
+
 
 @csrf_exempt
 def upload_file(request):
@@ -285,43 +294,63 @@ def channel_detail(request, server_id, channel_id):
     server = get_object_or_404(Server, id=server_id)
     channel = get_object_or_404(Channel, id=channel_id)
     channels = server.channels.all()
+    
+    # Check if user has access to the channel
+    if request.user not in channel.allowed_users.all() and request.user != server.owner and not Membership.objects.filter(user=request.user, server=server, role='moderator').exists():
+        return HttpResponseForbidden()
+
+    context = {
+        'server': server,
+        'channel': channel,
+        'channels': channels,
+        'user_id': request.user.username,
+    }
 
     if channel.channel_type == 'text':
-        messages = Message.objects.filter(channel=channel).order_by('timestamp')
-        file_uploads = FileUpload.objects.filter(channel=channel).order_by('uploaded_at')
-        context = {
-            'server': server,
-            'channel': channel,
-            'channels': channels,
-            'messages': messages,
-            'file_uploads': file_uploads,
-        }
+        context.update({
+            'messages': Message.objects.filter(channel=channel).order_by('timestamp'),
+            'file_uploads': FileUpload.objects.filter(channel=channel).order_by('uploaded_at'),
+        })
         return render(request, "channel_detail.html", context)
     
     elif channel.channel_type == 'audio':
-        user_id = request.user.username
-        agora_token = generate_agora_token(channel.name, user_id, 1)
-
-        context = {
-            'server': server,
-            'channel': channel,
-            'channels': channels,
+        agora_token = generate_agora_token(channel.name, request.user.username, 1)
+        context.update({
             'agora_token': agora_token,
             'agora_app_id': settings.AGORA_APP_ID,
-            'user_id': user_id,
-        }
+        })
         return render(request, "voice_channel.html", context)
     
     elif channel.channel_type == 'video':
-        user_id = request.user.username
-        agora_token = generate_agora_token(channel.name, user_id, 1)
-
-        context = {
-            'server': server,
-            'channel': channel,
-            'channels': channels,
+        agora_token = generate_agora_token(channel.name, request.user.username, 1)
+        context.update({
             'agora_token': agora_token,
             'agora_app_id': settings.AGORA_APP_ID,
-            'user_id': user_id,
-        }
+        })
         return render(request, "videochannel_detail.html", context)
+
+
+    
+@login_required
+def grant_channel_access(request, server_id, channel_id, user_id):
+    server = get_object_or_404(Server, id=server_id)
+    channel = get_object_or_404(Channel, id=channel_id)
+    user = get_object_or_404(User, id=user_id)
+
+    if not (request.user == server.owner or Membership.objects.filter(user=request.user, server=server, role='moderator').exists()):
+        return HttpResponseForbidden()
+
+    channel.allowed_users.add(user)
+    return redirect('server_detail', server_id=server_id)
+
+@login_required
+def restrict_channel_access(request, server_id, channel_id, user_id):
+    server = get_object_or_404(Server, id=server_id)
+    channel = get_object_or_404(Channel, id=channel_id)
+    user = get_object_or_404(User, id=user_id)
+
+    if not (request.user == server.owner or Membership.objects.filter(user=request.user, server=server, role='moderator').exists()):
+        return HttpResponseForbidden()
+
+    channel.allowed_users.remove(user)
+    return redirect('server_detail', server_id=server_id)
